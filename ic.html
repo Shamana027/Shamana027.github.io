@@ -1,0 +1,1463 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="circuitStyle.css">
+</head>
+<style>
+
+</style>
+
+<body>
+    <div class="top">
+        <input class="modal-btn-home" type="checkbox" id="modal-btn-home" name="modal-btn-home" onclick="homePage();" />
+        <label class="label-home" for="modal-btn-home">HOME</label>
+        <input class="modal-btn-resource" type="checkbox" id="modal-btn-resource" name="modal-btn-resource" />
+        <label class="label-resource" for="modal-btn-resource">RESOURCES</label>
+        <div class="modal-resource">
+            <div class="modal-wrap-resource">
+                <img src="batteryy.png" alt="">
+                <p>Battery is the main source of energy that provides a voltage which allows the current to flow
+                    through.</p>
+                <img src="resistorr.PNG" alt="">
+                <p>A resistor is an electrical component that limits or regulates the flow of electrical current in an
+                    electronic circuit. Resistors can also be used to provide a specific voltage for an active device
+                    such
+                    as a transistor.</p>
+                <img src="ledd.png" alt="">
+                <p>An LED (Light Emitting Diode) emits light when an electric current passes through it. The simplest
+                    circuit
+                    to power an LED is a voltage source with a resistor and an LED in series.</p>
+            </div>
+        </div>
+        <input class="modal-btn-about" type="checkbox" id="modal-btn-about" name="modal-btn-about" />
+        <label class="label-about" for="modal-btn-about">ABOUT</label>
+        <div class="modal-about">
+            <div class="modal-wrap-about">
+                <p>We think that the time has come for electronics design software to advance as well-user-friendly
+                    tools that take use of web-based distribution to make content immediately and everywhere available.
+                    Process and work together, just a few clicks, simulate, experiment, modify, and share the outcomes.
+                    By simplifying design and analysis, we can enable a new generation of engineers and enthusiasts to
+                    create the systems that will influence the future of the planet. This online circuit builder is an
+                    interactive tool that allows users to easily create, adjust, and evaluate electronic circuits and
+                    electronic components. The application features an interface that includes basic electronic
+                    components that are used in studying and applied in computer systems such as resistors, integrated
+                    circuits, and light emitting diodes. Users are also capable of creating their own basic electronic
+                    circuits and manipulate the values and connections of the electronic components for testing and
+                    evaluation.
+                </p>
+                <p>-Kaboom Integrated Circuit Builder Team-</p>
+            </div>
+        </div>
+        <input class="modal-btn-contact" type="checkbox" id="modal-btn-contact" name="modal-btn-contact" />
+        <label class="label-contact" for="modal-btn-contact">CONTACT</label>
+        <div class="modal-contact">
+            <div class="modal-wrap-contact">
+                <img src="kaboom.png" alt="">
+                <h1>Contact us</h1>
+                <p>(+63)9052545655</p>
+                <p>(+63)9695867299</p>
+                <p>Support@kaboom.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="forContainer">
+        <div id="leftPanel">
+            <div class="titleLeftPanel">Gates</div>
+            <div class="dragContainer1" id="componentDrag">
+                <button class="dragBox" id="andComp" onclick="ButtonClicked('comp', 'and')"></button>
+                <button class="dragBox" id="notComp" onclick="ButtonClicked('comp', 'not')"></button>
+                <button class="dragBox" id="norComp" onclick="ButtonClicked('comp', 'nor')"></button>
+                <button class="dragBox" id="orComp" onclick="ButtonClicked('comp', 'or')"></button>
+                <button class="dragBox" id="nandComp" onclick="ButtonClicked('comp', 'nand')"></button>
+                <button class="dragBox" id="xorComp" onclick="ButtonClicked('comp', 'xor')"></button>
+                <button class="dragBox" id="xnorComp" onclick="ButtonClicked('comp', 'xnor')"></button>
+            </div>
+            <div class="titleLeftPanel">IC</div>
+            <div class="dragContainer2" id="icDrag">
+                <div class="dragBox" id="andIC" onclick="ButtonClicked('ic', 'and')">and</div>
+                <div class="dragBox" id="notIC" onclick="ButtonClicked('ic', 'not')">not</div>
+                <div class="dragBox" id="norIC" onclick="ButtonClicked('ic', 'nor')">nor</div>
+                <div class="dragBox" id="orIC" onclick="ButtonClicked('ic', 'or')">or</div>
+                <div class="dragBox" id="nandIC" onclick="ButtonClicked('ic', 'nand')">nand</div>
+                <div class="dragBox" id="xorIC" onclick="ButtonClicked('ic', 'xor')">xor</div>
+                <div class="dragBox" id="xnorIC" onclick="ButtonClicked('ic', 'xnor')">xnor</div>
+            </div>
+            <div class="titleLeftPanel">Battery</div>
+            <div class="dragContainer3" id="batteryDrag">
+                <div class="dragBox" id="batteryComp" onclick="ButtonClicked('battery')"></div>
+            </div>
+            <div class="titleLeftPanel">Led</div>
+            <div class="dragContainer4" id="ledDrag">
+                <div class="dragBox" id="ledComp" onclick="ButtonClicked('led')"></div>
+            </div>
+        </div>
+        <div id="container">
+            <div id="content"></div>
+        </div>
+    </div>
+    <button id="hide" onclick="hideBtn()">Hide</button>
+    <button id="show" onclick="showBtn()">show</button>
+    <button onclick="runProgram()" id="printBtn">Print</button>
+    <button onclick="selectionMode('delete')">delete mode</button>
+    <button onclick="selectionMode('normal')">normal mode</button>
+</body>
+<script>
+    n1 = null;
+    n2 = null;
+    clicks = 0;
+
+    var componentCounter = 0;
+    var componentsArray = [];
+
+    function hideBtn() {
+        document.getElementById('leftPanel').style.display = "none";
+        document.getElementById('container').style.width = "100%";
+        document.getElementById('hide').style.display = "none";
+        document.getElementById('show').style.display = "initial";
+    }
+    function showBtn() {
+        document.getElementById('leftPanel').style.display = "initial";
+        document.getElementById('container').style.width = "78.4%";
+        document.getElementById('hide').style.display = "initial";
+        document.getElementById('show').style.display = "none";
+    }
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const container = document.getElementById('container');
+        const content = document.getElementById('content');
+        var scale = 1;
+        const scaleFactor = 0.1;
+        var translateX = 0, translateY = 0;
+
+        var isDragging = false;
+        var startX, startY;
+
+        container.addEventListener('wheel', function (e) {
+            e.preventDefault();
+
+            const rect = container.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const offsetXPercent = mouseX / rect.width;
+            const offsetYPercent = mouseY / rect.height;
+
+            let newScale;
+
+            if (e.deltaY < 0) {
+                newScale = scale + scaleFactor;
+            } else {
+                newScale = scale - scaleFactor;
+            }
+
+            const minScale = 0.8;
+            if (newScale < minScale) {
+                newScale = minScale;
+            }
+
+            translateX *= newScale / scale;
+            translateY *= newScale / scale;
+
+            scale = newScale;
+
+            content.style.transformOrigin = `${offsetXPercent * 100}% ${offsetYPercent * 100}%`;
+            content.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+        });
+
+        function getAdjustedCoordinates(clientX, clientY) {
+            const rect = container.getBoundingClientRect();
+            const offsetX = clientX - rect.left;
+            const offsetY = clientY - rect.top;
+            const scaledOffsetX = offsetX / scale;
+            const scaledOffsetY = offsetY / scale;
+            const adjustedX = (scaledOffsetX - translateX) / scale;
+            const adjustedY = (scaledOffsetY - translateY) / scale;
+            return { x: adjustedX, y: adjustedY };
+        }
+
+        let startTranslateX = 0;
+        let startTranslateY = 0;
+
+        container.addEventListener('mousedown', function (e) {
+            if (isDragging) {
+                e.preventDefault();
+                const rect = container.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                const adjustedCoords = getAdjustedCoordinates(mouseX, mouseY);
+                startX = adjustedCoords.x;
+                startY = adjustedCoords.y;
+                startTranslateX = translateX;
+                startTranslateY = translateY;
+                container.style.cursor = 'grabbing';
+            }
+        });
+
+        container.addEventListener('mousemove', function (e) {
+            if (isDragging) {
+                e.preventDefault();
+                const adjustedCoords = getAdjustedCoordinates(e.clientX, e.clientY);
+                translateX = startTranslateX + adjustedCoords.x - startX;
+                translateY = startTranslateY + adjustedCoords.y - startY;
+                content.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+            }
+        });
+
+        container.addEventListener('mouseup', function () {
+            isDragging = false;
+            container.style.cursor = 'default';
+        });
+
+        container.addEventListener('mouseleave', function () {
+            isDragging = false;
+            container.style.cursor = 'default';
+        });
+        document.addEventListener('keydown', function (e) {
+            const step = 100;
+
+            if (e.key === 'ArrowLeft') {
+                translateX += step;
+            } else if (e.key === 'ArrowRight') {
+                translateX -= step;
+            } else if (e.key === 'ArrowUp') {
+                translateY += step;
+            } else if (e.key === 'ArrowDown') {
+                translateY -= step;
+            }
+
+            content.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+        });
+    });
+    // Header functions (HomePage)
+    function homePage() {
+        window.location.href = "Home.html";
+    }
+
+    function createNode(nodeId, compNum, nodeType) {
+        let content = document.getElementById('content');
+        let node = document.createElement('div');
+        node.className = 'node';
+        node.id = compNum + nodeId;
+        node.style.color = 'white';
+        node.connectedComponents = [];
+        node.parent = null;
+        node.type = nodeType;
+        node.input = null;
+        node.output = null;
+        node.active = false;
+
+        // connection logic
+        activeLine = null;
+        activeFNode = null;
+        node.addEventListener('click', function (event) {
+            for (let i = 0; i < node.connectedComponents.length; i++) {
+                console.log("con:" + node.connectedComponents[i].id);
+            }
+            const clickedNodeId = event.target.id;
+            if (clicks > 0) {
+                n2 = document.getElementById(clickedNodeId);
+                console.log("n1 and n2");
+                console.log(n1);
+                console.log(n2);
+                if (n1.type == "input" && n2.type == "input" || n1.type == "output" && n2.type == "output" || n1.parent.id == n2.parent.id) {
+                    clicks = 0;
+                }
+                else {
+                    console.log("connected!!!!!!")
+                    let rect1 = fClick;
+                    let rect2 = n2.getBoundingClientRect();
+                    let containerRect = content.getBoundingClientRect();
+                    let x1 = rect1.left - containerRect.left + rect1.width / 2;
+                    let y1 = rect1.top - containerRect.top + rect1.height / 2;
+                    let x2 = rect2.left - containerRect.left + rect2.width / 2;
+                    let y2 = rect2.top - containerRect.top + rect2.height / 2;
+
+                    const line = document.createElement('div');
+                    line.className = 'line';
+                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                    line.parent = activeLine;
+                    line.style.width = length + 'px';
+                    line.style.height = '3px';
+                    line.style.left = (x1 - 0.5) + 'px'; // Subtract half of the line's thickness
+                    line.style.top = (y1 - 0.5) + 'px'; // Subtract half of the line's thickness
+                    line.style.position = 'relative';
+                    line.style.transformOrigin = 'top left';
+                    line.style.transform = 'rotate(' + angle + 'deg)';
+                    line.style.color = 'black';
+                    content.appendChild(line);
+
+                    fClick = null;
+                    activeLine.sNode = n2;
+                    console.log(activeLine.sNode);
+
+                    line.con1 = n1;
+                    line.con2 = n2;
+
+                    console.log("n1:" + n1.id + "pushed n2:" + n2.id);
+                    console.log(n1);
+                    console.log("n2:" + n2.id + "pushed n1:" + n1.id);
+                    console.log(n2);
+
+
+
+                    n1.connectedComponents.push(n2);
+                    n2.connectedComponents.push(n1);
+
+                    activeLine.linesArray.push(line);
+
+                    runLogic(n1.parent);
+                    runLogic(n2.parent);
+
+
+
+
+                    line.parent.linesArray.forEach(function (line) {
+                        let lineElement = line.element;
+                        //line.lineObj = lineObj;
+
+                        console.log(line.parent);
+
+                        line.addEventListener('click', function (event) {
+                            if (selMode == "delete") {
+
+                                let fNodeIndex = line.parent.fNode.connectedComponents.indexOf(line.parent.sNode);
+
+                                if (fNodeIndex !== -1) {
+                                    line.parent.fNode.connectedComponents.splice(fNodeIndex, 1);
+                                }
+                                //runLogic(line.parent.sNode.parent);
+                                let sNodeIndex = line.parent.sNode.connectedComponents.indexOf(line.parent.fNode);
+                                if (sNodeIndex !== -1) {
+                                    line.parent.sNode.connectedComponents.splice(sNodeIndex, 1);
+                                }
+
+                                line.parent.fNode.input = false;
+                                line.parent.sNode.input = false;
+                                if (line.parent.sNode.id.substring(0, 3) == "vcc") {
+                                    line.parent.sNode.active = false;
+                                }
+                                if (line.parent.fNode.id.substring(0, 3) == "vcc") {
+                                    line.parent.fNode.active = false;
+                                }
+
+                                if (line.parent.sNode.id.substring(0, 3) == "gnd") {
+                                    line.parent.sNode.active = false;
+                                }
+                                if (line.parent.fNode.id.substring(0, 3) == "gnd") {
+                                    line.parent.fNode.active = false;
+                                }
+
+
+                                //runLogic(line.parent.fNode.parent);
+                                //runLogic(line.parent.sNode.parent);
+                                runLogic(line.parent.fNode.parent);
+                                runLogic(line.parent.sNode.parent);
+
+                                line.parent.linesArray.forEach(function (line) {
+                                    line.remove();
+                                });
+                            }
+                        });
+                    });
+
+                    activeLine = null;
+
+
+
+                }
+                for (let i = 0; i < componentsArray.length; i++) {
+                    runLogic(componentsArray[i]);
+                }
+                clicks = 0;
+            }
+            else {
+                n1 = document.getElementById(clickedNodeId);
+                let lineObj = {
+                    linesArray: [],
+                    fNode: null,
+                    sNode: null,
+                };
+                lineObj.fNode = n1;
+                console.log("QWEQWEQWEWEEERRTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+                console.log(lineObj.fNode);
+                fClick = n1.getBoundingClientRect();
+                activeLine = lineObj;
+
+
+
+                /*
+                lineObj = {linesArray: [], fNode: null, sNode: null};
+                activeLine = lineObj;
+                activeFNode
+*/
+                clicks++;
+            }
+        }
+        );
+        return node;
+    }
+    fClick = null;
+    sClick = null;
+    // MULTILINE CONNECTION
+    container.addEventListener('click', function (event) {
+        if (clicks > 0 && !createComponentButton) {
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+
+
+            let rect1 = fClick;
+            let rect2 = new DOMRect(event.clientX, event.clientY, 0, 0);
+            let containerRect = content.getBoundingClientRect();
+            let x1 = rect1.left - containerRect.left + rect1.width / 2;
+            let y1 = rect1.top - containerRect.top + rect1.height / 2;
+            let x2 = rect2.left - containerRect.left + rect2.width / 2;
+            let y2 = rect2.top - containerRect.top + rect2.height / 2;
+
+            const line = document.createElement('div');
+            line.parent = activeLine;
+            line.className = 'line';
+            const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            line.style.width = length + 'px';
+            line.style.height = '3px';
+            line.style.left = (x1 - 0.5) + 'px'; // Subtract half of the line's thickness
+            line.style.top = (y1 - 0.5) + 'px'; // Subtract half of the line's thickness
+            line.style.position = 'relative';
+            line.style.transformOrigin = 'top left';
+            line.style.transform = 'rotate(' + angle + 'deg)';
+            line.style.color = 'black';
+            activeLine.linesArray.push(line);
+            content.appendChild(line);
+
+            fClick = rect2;
+
+
+
+            console.log("Clicked at: ", x, y);
+        }
+    });
+
+    // Used to create the design and functionalities of the integrated circuits
+    function createIC(x, y, newComponent) {
+        let content = document.getElementById('content');
+        let icDiv = document.createElement('div');
+        icDiv.isIc = true;
+        icDiv.style.position = 'absolute';
+        icDiv.style.left = `${x - 150}px`;
+        icDiv.style.top = `${y - 225}px`;
+        icDiv.posCon = false;
+        icDiv.negCon = false;
+        icDiv.type = "integCirc";
+        icDiv.id = "icDiv" + componentCounter;
+        let vcc = createNode("vcc", 0, "vcc");
+        let gnd = createNode("gnd", 0, "gnd");
+        vcc.parent = icDiv;
+        gnd.parent = icDiv;
+        icDiv.vcc = vcc;
+        icDiv.gnd = gnd;
+        icDiv.node1 = vcc;
+        icDiv.node3 = gnd;
+        vcc.id = "vcc" + icDiv.id;
+        gnd.id = "gnd" + icDiv.id;
+        vcc.parent = icDiv;
+        gnd.parent = icDiv;
+        icDiv.gates = [];
+        console.log(vcc.id);
+        console.log("checckkkk");
+        console.log(vcc.active);
+        if (newComponent != "not") {
+            if (newComponent == "and") {
+                icDiv.innerHTML = "<img src='IC-AND.png'>"
+            }
+            if (newComponent == "nor") {
+                icDiv.innerHTML = "<img src='IC-NOR.png'>"
+            }
+            if (newComponent == "or") {
+                icDiv.innerHTML = "<img src='IC-OR.png'>"
+            }
+            if (newComponent == "nand") {
+                icDiv.innerHTML = "<img src='IC-NAND.png'>"
+            }
+            if (newComponent == "xor") {
+                icDiv.innerHTML = "<img src='IC-XOR.png'>"
+            }
+            if (newComponent == "xnor") {
+                icDiv.innerHTML = "<img src='IC-XNOR.png'>"
+            }
+
+
+            let gate1 = createComponent(x, y);
+            let gate2 = createComponent(x, y);
+            let gate3 = createComponent(x, y);
+            let gate4 = createComponent(x, y);
+            vcc.style.position = 'absolute';
+            vcc.style.top = "85%";
+            vcc.style.left = "14px";
+            vcc.style.backgroundColor = "red";
+            gnd.style.position = 'absolute';
+            gnd.style.top = "12%";
+            gnd.style.left = "293px";
+            icDiv.appendChild(vcc);
+            icDiv.appendChild(gnd);
+
+            gate1.parent = icDiv;
+            gate2.parent = icDiv;
+            gate3.parent = icDiv;
+            gate4.parent = icDiv;
+            gate1.type = newComponent;
+            gate2.type = newComponent;
+            gate3.type = newComponent;
+            gate4.type = newComponent;
+
+            // Removes the logic gatedivs on the ic            
+            var img = gate1.getElementsByTagName('img')[0];
+            if (img) {
+                gate1.removeChild(img);
+            }
+            var img = gate2.getElementsByTagName('img')[0];
+            if (img) {
+                gate2.removeChild(img);
+            }
+            var img = gate3.getElementsByTagName('img')[0];
+            if (img) {
+                gate3.removeChild(img);
+            }
+            var img = gate4.getElementsByTagName('img')[0];
+            if (img) {
+                gate4.removeChild(img);
+            }
+
+            icDiv.gate1 = gate1;
+            icDiv.gate2 = gate2;
+            icDiv.gate3 = gate3;
+            icDiv.gate4 = gate4;
+
+            icDiv.gates.push(gate1);
+            icDiv.gates.push(gate2);
+            icDiv.gates.push(gate3);
+            icDiv.gates.push(gate4);
+
+            gate1.parent = icDiv;
+            gate2.parent = icDiv;
+            gate3.parent = icDiv;
+            gate4.parent = icDiv;
+
+            // top right
+            gate1.style.position = 'absolute';
+            gate1.style.top = '25%';
+            gate1.style.transform = 'translate(-50%, -50%)';
+            gate1.style.left = 'calc(50% + 30px)';
+
+            gate1.node1.style.backgroundColor = "blue";
+            gate1.node1.style.left = "135px";
+            gate1.node1.style.top = "235%";
+
+            gate1.node2.style.backgroundColor = "blue";
+            gate1.node2.style.left = "135px";
+            gate1.node2.style.top = "150%";
+
+            gate1.node3.style.backgroundColor = "blue";
+            gate1.node3.style.left = "135px";
+            gate1.node3.style.top = "55%";
+
+            ///////////////////////////////////////     
+            // bottom left
+            gate2.style.position = 'absolute';
+            gate2.style.top = '60%';
+            gate2.style.transform = 'translate(-50%, -50%)';
+            gate2.style.left = 'calc(50% - 25px)';
+
+            gate2.node1.style.backgroundColor = "blue";
+            gate2.node1.style.left = "-90px";
+            gate2.node1.style.top = "65%";
+
+            gate2.node2.style.backgroundColor = "blue";
+            gate2.node2.style.left = "-90px";
+            //gate1.node2.style.top = "150%";
+
+            gate2.node3.style.backgroundColor = "blue";
+            gate2.node3.style.left = "-90px";
+            gate2.node3.style.top = "-18%";
+
+            //////////////////////////////////////////////
+            //bottom right
+            gate3.style.position = 'absolute';
+            gate3.style.top = '70%';
+            gate3.style.transform = 'translate(-50%, -50%)';
+            gate3.style.left = 'calc(50% + 30px)';
+
+            gate3.node1.style.backgroundColor = "blue";
+            gate3.node1.style.left = "135px";
+            gate3.node1.style.top = "178%";
+
+            gate3.node2.style.backgroundColor = "blue";
+            gate3.node2.style.left = "135px";
+            gate3.node2.style.top = "98%";
+
+            gate3.node3.style.backgroundColor = "blue";
+            gate3.node3.style.left = "135px";
+            gate3.node3.style.top = "-3%";
+
+            //////////////////////////////
+            // top left
+            gate4.style.position = 'absolute';
+            gate4.style.top = '25%';
+            gate4.style.transform = 'translate(-50%, -50%)';
+            gate4.style.left = 'calc(50% - 25px)';
+
+            gate4.node1.style.backgroundColor = "blue";
+            gate4.node1.style.left = "-90px";
+            gate4.node1.style.top = "65%";
+
+            gate4.node2.style.backgroundColor = "blue";
+            gate4.node2.style.left = "-90px";
+            //gate1.node2.style.top = "150%";
+
+            gate4.node3.style.backgroundColor = "blue";
+            gate4.node3.style.left = "-90px";
+            gate4.node3.style.top = "-18%";
+            /////////////////////////////////////
+            icDiv.appendChild(gate1);
+            icDiv.appendChild(gate2);
+            icDiv.appendChild(gate3);
+            icDiv.appendChild(gate4);
+            icDiv.addEventListener('click', function () {
+                console.log(icDiv.gates);
+                console.log("IC CLICKED -------------------------");
+                if (selMode == "delete") {
+                    for (let i = 0; i < icDiv.gates.length; i++) {
+                        for (let j = 0; j < icDiv.gates[i].node1.connectedComponents.length; j++) {
+                            firstIndex = icDiv.gates[i].node1.connectedComponents[j].connectedComponents.indexOf(icDiv.gates[i].node1);
+                            if (firstIndex !== -1) {
+                                icDiv.gates[i].node1.connectedComponents[j].connectedComponents.splice(firstIndex, 1);
+                                runLogic(icDiv.gates[i].node1.connectedComponents[j].parent);
+                            }
+                        }
+                        for (let j = 0; j < icDiv.gates[i].node2.connectedComponents.length; j++) {
+                            secondIndex = icDiv.gates[i].node2.connectedComponents[j].connectedComponents.indexOf(icDiv.gates[i].node2);
+                            if (secondIndex !== -1) {
+                                icDiv.gates[i].node2.connectedComponents[j].connectedComponents.splice(secondIndex, 1);
+                                runLogic(icDiv.gates[i].node2.connectedComponents[j].parent);
+                            }
+                        }
+                        for (let j = 0; j < icDiv.gates[i].node3.connectedComponents.length; j++) {
+                            thirdIndex = icDiv.gates[i].node3.connectedComponents[j].connectedComponents.indexOf(icDiv.gates[i].node3);
+                            if (thirdIndex !== -1) {
+                                console.log("&&&&&&&&&&&&&&&&&&&&&");
+                                console.log(icDiv.gates[i].node3.connectedComponents[j].parent.id);
+                                icDiv.gates[i].node3.connectedComponents[j].connectedComponents.splice(thirdIndex, 1);
+                                runLogic(icDiv.gates[i].node3.connectedComponents[j].parent);
+                                
+                            }
+                        }
+                    }
+                    runLogic(icDiv);
+                    icDiv.remove();
+                }
+            });
+        }
+        else {
+            icDiv.innerHTML = "<img src='icDivNot.png'>";
+            let gate1 = createComponent(x, y, false);
+            let gate2 = createComponent(x, y, false);
+            let gate3 = createComponent(x, y, false);
+            let gate4 = createComponent(x, y, false);
+            let gate5 = createComponent(x, y, false);
+            let gate6 = createComponent(x, y, false);
+            icDiv.type = "integCirc";
+            vcc.style.position = 'absolute';
+            vcc.style.top = "77%";
+            vcc.style.left = "70px";
+            vcc.style.backgroundColor = "red";
+            gnd.style.position = 'absolute';
+            gnd.style.top = "19%";
+            gnd.style.left = "290px";
+            icDiv.appendChild(vcc);
+            icDiv.appendChild(gnd);
+
+            gate1.parent = icDiv;
+            gate2.parent = icDiv;
+            gate3.parent = icDiv;
+            gate4.parent = icDiv;
+            gate5.parent = icDiv;
+            gate6.parent = icDiv;
+            gate1.type = newComponent;
+            gate2.type = newComponent;
+            gate3.type = newComponent;
+            gate4.type = newComponent;
+            gate5.type = newComponent;
+            gate6.type = newComponent;
+
+            var img = gate1.getElementsByTagName('img')[0];
+            if (img) {
+                gate1.removeChild(img);
+            }
+            var img = gate2.getElementsByTagName('img')[0];
+            if (img) {
+                gate2.removeChild(img);
+            }
+            var img = gate3.getElementsByTagName('img')[0];
+            if (img) {
+                gate3.removeChild(img);
+            }
+            var img = gate4.getElementsByTagName('img')[0];
+            if (img) {
+                gate4.removeChild(img);
+            }
+            var img = gate5.getElementsByTagName('img')[0];
+            if (img) {
+                gate5.removeChild(img);
+            }
+            var img = gate6.getElementsByTagName('img')[0];
+            if (img) {
+                gate6.removeChild(img);
+            }
+
+
+            // TOP LEFT
+            gate1.style.position = 'absolute';
+            gate1.style.top = '25%';
+            gate1.style.transform = 'translate(-50%, -50%)';
+            gate1.style.left = 'calc(50% + 10px)';
+
+            gate1.node1.style.backgroundColor = "blue";
+            gate1.node1.style.left = "-70px";
+            gate1.node1.style.top = "95%";
+
+            gate1.node3.style.backgroundColor = "blue";
+            gate1.node3.style.left = "-70px";
+            gate1.node3.style.top = "15%";
+
+            gate1.node1.x = -90;
+            gate1.node1.y = 95;
+
+            gate1.node3.x = -68;
+            gate1.node3.y = 15;
+
+            ///////////////////////////////////
+            // MIDDLE LEFT
+            gate2.style.position = 'absolute';
+            gate2.style.top = '45%';
+            gate2.style.transform = 'translate(-50%, -50%)';
+            gate2.style.left = 'calc(50% + 10px)';
+
+
+            gate2.node1.style.backgroundColor = "blue";
+            gate2.node1.style.left = "-70px";
+            gate2.node1.style.top = "95%";
+
+            gate2.node3.style.backgroundColor = "blue";
+            gate2.node3.style.left = "-70px";
+            gate2.node3.style.top = "15%";
+
+            gate2.node1.x = -90;
+            gate2.node1.y = 95;
+
+            gate2.node3.x = -68;
+            gate2.node3.y = 15;
+
+            /////////////////////////
+
+            //gate2.style.backgroundColor = "blue";
+            // BOTTOM LEFT
+            gate3.style.position = 'absolute';
+            gate3.style.top = '64%';
+            gate3.style.transform = 'translate(-50%, -50%)';
+            gate3.style.left = 'calc(50% + 10px)';
+
+            gate3.node1.style.backgroundColor = "blue";
+            gate3.node1.style.left = "-70px";
+            gate3.node1.style.top = "95%";
+
+            gate3.node3.style.backgroundColor = "blue";
+            gate3.node3.style.left = "-70px";
+            gate3.node3.style.top = "15%";
+
+            gate3.node1.x = -90;
+            gate3.node1.y = 95;
+
+            gate3.node3.x = -68;
+            gate3.node3.y = 15;
+            //////////////////////////////
+
+            gate4.style.position = 'absolute';
+            gate4.style.top = '35%';
+            gate4.style.transform = 'translate(-50%, -50%)';
+            gate4.style.left = 'calc(50% + 50px)';
+
+            gate4.node1.style.backgroundColor = "blue";
+            gate4.node1.style.left = "110px";
+            gate4.node1.style.top = "95%";
+
+            gate4.node3.style.backgroundColor = "blue";
+            gate4.node3.style.left = "110px";
+            gate4.node3.style.top = "15%";
+
+            gate4.node1.x = 90;
+            gate4.node1.y = 95;
+
+            gate4.node3.x = 110;
+            gate4.node3.y = 15;
+            /////////////////////////////////////////////
+            gate5.style.position = 'absolute';
+            gate5.style.top = '55%';
+            gate5.style.transform = 'translate(-50%, -50%)';
+            gate5.style.left = 'calc(50% + 50px)';
+
+            gate5.node1.style.backgroundColor = "blue";
+            gate5.node1.style.left = "110px";
+
+            gate5.node1.style.top = "95%";
+
+            gate5.node3.style.backgroundColor = "blue";
+            gate5.node3.style.left = "110px";
+            gate5.node3.style.top = "15%";
+
+            gate5.node1.x = 90;
+            gate5.node1.y = 95;
+
+            gate5.node3.x = 110;
+            gate5.node3.y = 15;
+
+            //////////////////////////////////////
+            gate6.style.position = 'absolute';
+            gate6.style.top = '73%';
+            gate6.style.transform = 'translate(-50%, -50%)';
+            gate6.style.left = 'calc(50% + 50px)';
+
+            gate6.node1.style.backgroundColor = "blue";
+            gate6.node1.style.left = "110px";
+
+            gate6.node1.style.top = "95%";
+
+            gate6.node3.style.backgroundColor = "blue";
+            gate6.node3.style.left = "110px";
+            gate6.node3.style.top = "15%";
+
+            gate6.node1.x = 90;
+            gate6.node1.y = 95;
+
+            gate6.node3.x = 110;
+            gate6.node3.y = 15;
+            ////////////////////////////////////////////////
+            gate1.removeChild(gate1.node2);
+            gate2.removeChild(gate2.node2);
+            gate3.removeChild(gate3.node2);
+            gate4.removeChild(gate4.node2);
+            gate5.removeChild(gate5.node2);
+            gate6.removeChild(gate6.node2);
+
+            icDiv.gates.push(gate1);
+            icDiv.gates.push(gate2);
+            icDiv.gates.push(gate3);
+            icDiv.gates.push(gate4);
+            icDiv.gates.push(gate5);
+            icDiv.gates.push(gate6);
+            gate1.parent = icDiv;
+            gate2.parent = icDiv;
+            gate3.parent = icDiv;
+            gate4.parent = icDiv;
+            gate5.parent = icDiv;
+            gate6.parent = icDiv;
+            icDiv.appendChild(gate1);
+            icDiv.appendChild(gate2);
+            icDiv.appendChild(gate3);
+            icDiv.appendChild(gate4);
+            icDiv.appendChild(gate5);
+            icDiv.appendChild(gate6);
+            icDiv.addEventListener('click', function () {
+                console.log(icDiv.gates);
+                console.log("IC CLICKED -------------------------");
+                if (selMode == "delete") {
+                    for (let i = 0; i < icDiv.gates.length; i++) {
+                        for (let j = 0; j < icDiv.gates[i].node1.connectedComponents.length; j++) {
+                            firstIndex = icDiv.gates[i].node1.connectedComponents[j].connectedComponents.indexOf(icDiv.gates[i].node1);
+                            if (firstIndex !== -1) {
+                                icDiv.gates[i].node1.connectedComponents[j].connectedComponents.splice(firstIndex, 1);
+                            }
+                        }
+                        for (let j = 0; j < icDiv.gates[i].node3.connectedComponents.length; j++) {
+                            thirdIndex = icDiv.gates[i].node3.connectedComponents[j].connectedComponents.indexOf(icDiv.gates[i].node3);
+                            if (thirdIndex !== -1) {
+                                icDiv.gates[i].node3.connectedComponents[j].connectedComponents.splice(thirdIndex, 1);
+                            }
+                        }
+                    }
+                    icDiv.remove();
+                }
+            });
+        }
+        for (let i = 0; i < icDiv.gates.length; i++) {
+            icDiv.gates[i].parent = icDiv;
+        }
+        componentCounter++;
+        icDiv.style.transform = "rotate(90deg)";
+        componentsArray.push(icDiv);
+        content.appendChild(icDiv);
+    }
+
+    componentCounter = 1;
+    componentsArray = [];
+
+    function createComponent(x, y, newComponent) {
+        let content = document.getElementById('content');
+        let node1 = createNode('node1', componentCounter, "input");
+        let node2 = createNode('node2', componentCounter, "input");
+        let node3 = createNode('node3', componentCounter, "output");
+        let component = document.createElement('div');
+        component.id = "component" + componentCounter;
+        component.className = 'component';
+        component.style.position = 'absolute';
+        component.style.left = `${x - 50}px`;
+        component.style.top = `${y - 25}px`;
+        component.componentType = "component";
+        ///////////////////////////
+        ///////////////////////////
+        component.style.transform = "rotate(90deg)";
+        ///////////////////////////
+        //////////////////////////
+        component.numbering = componentCounter;
+        component.node1 = node1;
+        component.node2 = node2;
+        component.node3 = node3;
+        component.parent = null;
+        node1.parent = component;
+        node2.parent = component;
+        node3.parent = component;
+        content.appendChild(component);
+        if (newComponent != "not") {
+            switch (newComponent) {
+                case "and":
+                    component.innerHTML = "<img src='BG-Gate-AND.png'>"
+                    break;
+                case "nand":
+                    component.innerHTML = "<img src='BG-Gate-NAND.png'>"
+                    break;
+                case "or":
+                    component.innerHTML = "<img src='BG-Gate-OR.png'>"
+                    break;
+                case "nor":
+                    component.innerHTML = "<img src='BG-Gate-NOR.png'>"
+                    break;
+                case "xor":
+                    component.innerHTML = "<img src='BG-Gate-XOR.png'>"
+                    break;
+                case "xnor":
+                    component.innerHTML = "<img src='BG-Gate-XNOR.png'>"
+                    break;
+            }
+            node1.style.position = 'absolute';
+            node1.style.top = '130%';
+            node1.style.transform = 'translate(-50%, -50%)';
+            node1.style.right = 'calc(50% + 10px)';
+            node2.style.position = 'absolute';
+            node2.style.top = '150%';
+            node2.style.transform = 'translate(-50%, -50%)';
+            node2.style.left = 'calc(50% + 25px)';
+            node1.id = "node1" + "component" + componentCounter;
+            node2.id = "node2" + "component" + componentCounter;
+            node1.input = null;
+            node2.input = null;
+            component.appendChild(node1);
+            component.appendChild(node2);
+        }
+        else {
+            component.innerHTML = "<img src='BG-gate-NOT.png'>"
+            node1.style.position = 'absolute';
+            node1.style.top = '150%';
+            node1.style.transform = 'translate(-50%, -50%)';
+            node1.style.left = 'calc(50%)';
+            node1.id = "node1" + "component" + componentCounter;
+            node1.input = null;
+            component.appendChild(node1);
+        }
+        node3.style.position = 'absolute';
+        node3.style.top = '-50%';
+        node3.style.transform = 'translate(-50%, -50%)';
+        node3.style.left = 'calc(50%)';
+        node3.id = "node3" + "component" + componentCounter;
+        component.appendChild(node3);
+        componentsArray.push(component);
+        component.addEventListener("click", function (event) {
+            console.log("parent is " + component.parent);
+            console.log("ASDFASDF");
+            console.log("NODE1 INPUT:" + node1.input);
+            console.log("NODE2 INPUT:" + node2.input);
+            console.log("NODE3 OUTPUT:" + node3.output);
+            console.log(component.id);
+            console.log("OUTPUT:" + node3.output)
+            console.log(node3.connectedComponents);
+            console.log("COMPONENT TYPE IS" + component.type);
+        });
+        //runLogic(component);
+        componentCounter++;
+        return component;
+    }
+    createType = "comp";
+    var createComponentButton = false;
+    types = null;
+    function ButtonClicked(type, type1) {
+        createType = type;
+        types = type1;
+        createComponentButton = true;
+        console.log(createComponentButton);
+    }
+    container.addEventListener('click', function (event) {
+        if (createComponentButton === true) {
+            switch (createType) {
+                case "comp":
+                    createComponent(event.offsetX, event.offsetY, types);
+                    break;
+                case "ic":
+                    createIC(event.offsetX, event.offsetY, types);
+                    break;
+                case "battery":
+                    console.log("batttttt");
+                    createBattery(event.offsetX, event.offsetY);
+                    break;
+                case "led":
+                    createLED(event.offsetX, event.offsetY);
+                    break;
+            }
+            createComponentButton = false;
+        }
+    })
+
+    function runLogic(comp) {
+
+        if (comp.parent != null) {
+
+            if (comp.parent.vcc.active == true && comp.parent.gnd.active == true) {
+
+                switch (comp.type) {
+                    case "integCirc":
+                        for (let i = 0; i < comp.vcc.connectedComponents.length; i++) {
+                            if (comp.vcc.connectedComponents[i].id == "batterynode3") {
+                                comp.vcc.active = true;
+                                break;
+                            }
+                            else {
+                                comp.vcc.active = false;
+                            }
+                        }
+                        for (let i = 0; i < comp.gnd.connectedComponents.length; i++) {
+                            if (comp.gnd.connectedComponents[i].id == "batterynode1") {
+                                comp.gnd.active = true;
+                                break;
+                            }
+                            else {
+                                comp.gnd.active = false;
+                            }
+                        }
+                        for (let i = 0; i < comp.gates.length; i++) {
+                            runLogic(comp.gates[i]);
+                        }
+
+                        break;
+
+                    case "not":
+                        console.log(comp.node1);
+                        if (comp.node1.input) {
+                            comp.node3.output = false;
+                        }
+                        else {
+                            comp.node3.output = true;
+                        }
+                        break;
+                    case "nor":
+                        if (comp.node1.input || comp.node2.input) {
+                            comp.node3.output = false;
+                        }
+                        else {
+                            comp.node3.output = true;
+                        }
+                        break;
+                    case "or":
+                        if (comp.node1.input || comp.node2.input) {
+                            comp.node3.output = true;
+                        }
+                        else {
+                            comp.node3.output = false;
+                        }
+                        break;
+                    case "and":
+                        if (comp.node1.input && comp.node2.input) {
+                            comp.node3.output = true;
+                            console.log("NODE 1 INPUT" + comp.node1.input);
+                            console.log("NODE 2 INPUT" + comp.node2.input);
+                        }
+                        else {
+                            comp.node3.output = false;
+                            console.log("NODE 1 INPUT" + comp.node1.input);
+                            console.log("NODE 2 INPUT" + comp.node2.input);
+                        }
+                        break;
+                    case "nand":
+                        if (comp.node1.input && comp.node2.input) {
+                            comp.node3.output = false;
+                        }
+                        else {
+                            comp.node3.output = true;
+                        }
+                        break;
+                    case "xor":
+                        if (comp.node1.input || comp.node2.input) {
+                            comp.node3.output = true;
+                        }
+                        else {
+                            comp.node3.output = false;
+                        }
+                        break;
+                    case "xnor":
+                        if (comp.node1.input || comp.node2.input) {
+                            comp.node3.output = false;
+                        }
+                        else {
+                            comp.node3.output = true;
+                        }
+                        break;
+                    case "battery":
+                        break;
+                    case "led":
+                        var imgElement = comp.querySelector("img");
+                        console.log("met led");
+                        if (comp.node1.input) {
+                            console.log("node 1 is true");
+                            console.log(comp.node3.connectedComponents);
+                            if (comp.node3.connectedComponents.length == 0) {
+                                imgElement.src = 'led.png';
+                            }
+                            for (let i = 0; i < comp.node3.connectedComponents.length; i++) {
+
+
+                                if (comp.node3.connectedComponents[i].id == "batterynode1" || comp.node3.connectedComponents[i].id.substring(0, 3) == "gnd") {
+
+                                    imgElement.src = 'ledlit.png';
+
+                                }
+                                else {
+                                    console.log("THERE IS NO LED LIT");
+                                    imgElement.src = 'led.png';
+                                }
+                            }
+                        }
+                        else {
+                            imgElement.src = 'led.png';
+                        }
+                        break;
+                }
+            }
+            else if (!comp.parent.vcc.active || !comp.parent.gnd.active) {
+                for (let i = 0; i < comp.parent.gates.length; i++) {
+                    comp.parent.gates[i].node3.output = null;
+                }
+            }
+        }
+        else {
+
+            switch (comp.type) {
+                case "integCirc":
+                    for (let i = 0; i < comp.vcc.connectedComponents.length; i++) {
+                        if (comp.vcc.connectedComponents[i].id == "batterynode3") {
+                            comp.vcc.active = true;
+                            break;
+                        }
+                        else {
+                            comp.vcc.active = false;
+                        }
+                    }
+                    for (let i = 0; i < comp.gnd.connectedComponents.length; i++) {
+                        if (comp.gnd.connectedComponents[i].id == "batterynode1") {
+                            comp.gnd.active = true;
+                            break;
+                        }
+                        else {
+                            comp.gnd.active = false;
+                        }
+                    }
+                    console.log("integ circ run logicccccccccccccccccccccc");
+                    for (let i = 0; i < comp.gates.length; i++) {
+                        runLogic(comp.gates[i]);
+                    }
+
+                    break;
+
+                case "not":
+                    console.log(comp.node1);
+                    if (comp.node1.input) {
+                        comp.node3.output = false;
+                    }
+                    else {
+                        comp.node3.output = true;
+                    }
+                    break;
+                case "nor":
+                    if (comp.node1.input || comp.node2.input) {
+                        comp.node3.output = false;
+                    }
+                    else {
+                        comp.node3.output = true;
+                    }
+                    break;
+                case "or":
+                    if (comp.node1.input || comp.node2.input) {
+                        comp.node3.output = true;
+                    }
+                    else {
+                        comp.node3.output = false;
+                    }
+                    break;
+                case "and":
+                    if (comp.node1.input && comp.node2.input) {
+                        console.log("HAS PARENT");
+                        console.log("NODE 1 INPUT" + comp.node1.input);
+                        console.log("NODE 2 INPUT" + comp.node2.input);
+                        comp.node3.output = true;
+                    }
+                    else {
+                        comp.node3.output = false;
+                        console.log("HAS PARENT");
+                        console.log("NODE 1 INPUT" + comp.node1.input);
+                        console.log("NODE 2 INPUT" + comp.node2.input);
+                    }
+                    break;
+                case "nand":
+                    if (comp.node1.input && comp.node2.input) {
+                        comp.node3.output = false;
+                    }
+                    else {
+                        comp.node3.output = true;
+                    }
+                    break;
+                case "xor":
+                    if (comp.node1.input || comp.node2.input) {
+                        comp.node3.output = true;
+                    }
+                    else {
+                        comp.node3.output = false;
+                    }
+                    break;
+                case "xnor":
+                    if (comp.node1.input || comp.node2.input) {
+                        comp.node3.output = false;
+                    }
+                    else {
+                        comp.node3.output = true;
+                    }
+                    break;
+                case "battery":
+
+                    break;
+                case "led":
+                    var imgElement = comp.querySelector("img");
+                    console.log("met led");
+                    if (comp.node1.input) {
+                        console.log("node 1 is true");
+                        console.log(comp.node3.connectedComponents);
+                        if (comp.node3.connectedComponents.length == 0) {
+                            imgElement.src = 'led.png';
+                        }
+                        for (let i = 0; i < comp.node3.connectedComponents.length; i++) {
+                            if (comp.node3.connectedComponents[i].id == "batterynode1" || comp.node3.connectedComponents[i].id.substring(0, 3) == "gnd") {
+                                imgElement.src = 'ledlit.png';
+
+                            }
+                            else {
+                                imgElement.src = 'led.png';
+                            }
+                        }
+                    }
+                    else {
+                        imgElement.src = 'led.png';
+                    }
+                    break;
+            }
+
+        }
+
+
+        for (let i = 0; i < comp.node3.connectedComponents.length; i++) {
+            comp.node3.connectedComponents[i].input = comp.node3.output;
+            if (comp.node3.connectedComponents[i].parent.type != "battery" && comp.type != "led") {
+                runLogic(comp.node3.connectedComponents[i].parent);
+            }
+        }
+
+
+
+    }
+
+    function createBattery(x, y) {
+        let content = document.getElementById('content');
+        let battery = document.createElement('div');
+        battery.style.width = "100px";
+        battery.style.height = "150px";
+        battery.style.position = 'absolute';
+        battery.style.left = `${x - 50}px`;
+        battery.style.top = `${y - 25}px`;
+        battery.type = "battery";
+        battery.id = "battery" + componentCounter;
+        console.log("BATTERY ID:" + battery.id);
+        battery.innerHTML = "<img src='battery.png' style='max-width: 100%; max-height: 100%;'>";
+
+        let node1 = createNode('node1', componentCounter, "neg");
+        let node3 = createNode('node3', componentCounter, "pos");
+
+        node1.parent = battery;
+        node3.parent = battery;
+        node3.output = true;
+
+        battery.node1 = node1;
+        battery.node3 = node3;
+
+        node1.id = "batterynode1";
+        node3.id = "batterynode3";
+
+        node1.style.position = 'absolute';
+        node1.style.top = '103%';
+        node1.style.transform = 'translate(-50%, -50%)';
+        node1.style.left = 'calc(50%)';
+
+        node3.style.position = 'absolute';
+        node3.style.top = '0%';
+        node3.style.transform = 'translate(-50%, -50%)';
+        node3.style.left = 'calc(50%)';
+
+        battery.appendChild(node1);
+        battery.appendChild(node3);
+        console.log(battery);
+        content.appendChild(battery);
+
+        battery.addEventListener("click", function (event) {
+
+
+            console.log(battery.node3.connectedComponents);
+            console.log(battery.node1.connectedComponents);
+
+            if (selMode == "delete") {
+                for (let i = 0; i < battery.node1.connectedComponents.length; i++) {
+
+                    firstIndex = battery.node1.connectedComponents[i].connectedComponents.indexOf(battery.node1);
+                    if (firstIndex !== -1) {
+                        battery.node1.connectedComponents[i].connectedComponents.splice(firstIndex, 1);
+                    }
+                    runLogic(battery.node1.connectedComponents[i]);
+
+                }
+                for (let i = 0; i < battery.node3.connectedComponents.length; i++) {
+
+                    thirdIndex = battery.node3.connectedComponents[i].connectedComponents.indexOf(battery.node3);
+                    if (thirdIndex !== -1) {
+                        battery.node3.connectedComponents[i].connectedComponents.splice(thirdIndex, 1);
+                    }
+                    runLogic(battery.node3.connectedComponents[i]);
+                }
+                battery.remove();
+            }
+        });
+        componentsArray.push(battery);
+        componentCounter++;
+    }
+    function createLED(x, y) {
+        let content = document.getElementById('content');
+        let led = document.createElement('div');
+        led.className = "component";
+        led.style.width = "100px";
+        led.style.height = "150px";
+        led.style.position = 'absolute';
+        led.style.left = `${x - 50}px`;
+        led.style.top = `${y - 25}px`;
+        led.type = "led";
+        led.id = "led" + componentCounter;
+        console.log(led);
+        led.innerHTML = "<img src='led.png' style='max-width: 100%; max-height: 100%;'>";
+
+        let node1 = createNode('node1', componentCounter, "input");
+        let node3 = createNode('node3', componentCounter, "input");
+
+        node1.parent = led;
+        node3.parent = led;
+        led.node1 = node1;
+        led.node3 = node3;
+
+        node1.id = "lednode1";
+        node3.id = "lednode3";
+
+        node1.style.position = 'absolute';
+        node1.style.top = '108%';
+        node1.style.transform = 'translate(-50%, -50%)';
+        node1.style.right = 'calc(50% + 0px)';
+        node3.style.position = 'absolute';
+        node3.style.top = '108%';
+        node3.style.transform = 'translate(-50%, -50%)';
+        node3.style.left = 'calc(50% + 15px)';
+
+        led.appendChild(node1);
+        led.appendChild(node3);
+        content.appendChild(led);
+        //
+        led.addEventListener("click", function (event) {
+            console.log("ASDFASDF");
+            console.log(node1.input);
+            console.log(node3.input);
+            console.log(led.id);
+            //console.log("OUTPUT:" +node3.output)
+            console.log(node3.connectedComponents);
+
+
+            if (selMode == "delete") {
+                for (let i = 0; i < led.node1.connectedComponents.length; i++) {
+
+                    firstIndex = led.node1.connectedComponents[i].connectedComponents.indexOf(led.node1);
+                    if (firstIndex !== -1) {
+                        led.node1.connectedComponents[i].connectedComponents.splice(firstIndex, 1);
+                    }
+
+                }
+                for (let i = 0; i < led.node3.connectedComponents.length; i++) {
+
+                    thirdIndex = led.node3.connectedComponents[i].connectedComponents.indexOf(led.node3);
+                    if (thirdIndex !== -1) {
+                        led.node3.connectedComponents[i].connectedComponents.splice(thirdIndex, 1);
+                    }
+
+                }
+                led.remove();
+            }
+
+
+
+
+        });
+        // componentsArray.push(led);
+        //
+        componentCounter++;
+    }
+
+    function runProgram() {
+        for (let i = 0; i < componentsArray.length; i++) {
+            runLogic(componentsArray[i]);
+        }
+    }
+
+    selMode = "normal";
+
+    function selectionMode(mode) {
+        if (mode == "reset") {
+            activeLine.linesArray.forEach(function (line) {
+                line.remove();
+                fClick = null;
+                sClick = null;
+                clicks = 0;
+            })
+        }
+        selMode = mode;
+    }
+    function deleteLine(lineobject) {
+        console.log(lineobject);
+    }
+
+</script>
+
+</html>

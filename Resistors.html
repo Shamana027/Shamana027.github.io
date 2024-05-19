@@ -1,0 +1,747 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<link rel="stylesheet" type="text/css" href="resistorsStyle.css">
+<head>
+    <meta charset="utf-8" />
+    <title>Resistors</title>
+
+    <style>
+    </style>
+
+</head>
+<body>
+    <div class="top">
+        <input class="modal-btn-home" type="checkbox" id="modal-btn-home" name="modal-btn-home" onclick="homePage();" />
+        <label class="label-home" for="modal-btn-home">HOME</label>
+        <input class="modal-btn-resource" type="checkbox" id="modal-btn-resource" name="modal-btn-resource" />
+        <label class="label-resource" for="modal-btn-resource">RESOURCES</label>
+        <div class="modal-resource">
+            <div class="modal-wrap-resource">
+                <img src="batteryy.png" alt="">
+                <p>Battery is the main source of energy that provides a voltage which allows the current to flow
+                    through.</p>
+                <img src="resistorr.PNG" alt="">
+                <p>A resistor is an electrical component that limits or regulates the flow of electrical current in an
+                    electronic circuit. Resistors can also be used to provide a specific voltage for an active device
+                    such
+                    as a transistor.</p>
+                <img src="ledd.png" alt="">
+                <p>An LED (Light Emitting Diode) emits light when an electric current passes through it. The simplest
+                    circuit
+                    to power an LED is a voltage source with a resistor and an LED in series.</p>
+            </div>
+        </div>
+        <input class="modal-btn-about" type="checkbox" id="modal-btn-about" name="modal-btn-about" />
+        <label class="label-about" for="modal-btn-about">ABOUT</label>
+        <div class="modal-about">
+            <div class="modal-wrap-about">
+                <p>We think that the time has come for electronics design software to advance as well-user-friendly
+                    tools that take use of web-based distribution to make content immediately and everywhere available.
+                    Process and work together, just a few clicks, simulate, experiment, modify, and share the outcomes.
+                    By simplifying design and analysis, we can enable a new generation of engineers and enthusiasts to
+                    create the systems that will influence the future of the planet. This online circuit builder is an
+                    interactive tool that allows users to easily create, adjust, and evaluate electronic circuits and
+                    electronic components. The application features an interface that includes basic electronic
+                    components that are used in studying and applied in computer systems such as resistors, integrated
+                    circuits, and light emitting diodes. Users are also capable of creating their own basic electronic
+                    circuits and manipulate the values and connections of the electronic components for testing and
+                    evaluation.
+                </p>
+                <p>-Kaboom Integrated Circuit Builder Team-</p>
+            </div>
+        </div>
+        <input class="modal-btn-contact" type="checkbox" id="modal-btn-contact" name="modal-btn-contact" />
+        <label class="label-contact" for="modal-btn-contact">CONTACT</label>
+        <div class="modal-contact">
+            <div class="modal-wrap-contact">
+                <img src="kaboom.png" alt="">
+                <h1>Contact us</h1>
+                <p>(+63)9052545655</p>
+                <p>(+63)9695867299</p>
+                <p>Support@kaboom.com</p>
+            </div>
+        </div>
+    </div>
+    <button id="createSquareBtn" onclick="ButtonClicked()">Create Resistor</button>
+    <button onclick="tester.runResistance(testerNode1.connectedComponents, testerNode2.connectedComponents)">Calculate Resistance</button>
+    <label for="voltageTextBox" style="color:white;">Enter Voltage:</label>
+  <input type="number" id="voltageTextBox" name="voltageTextBox">
+  <button onclick="changeToR()">Resistance</button>
+  <button onclick="changeToV()">Voltage</button>
+  <button onclick="changeToI()">Amphere</button>
+    <div id="container">
+        <div id="content"></div>
+    </div>
+   
+
+    <script>
+        // Header functions (HomePage)
+        function homePage() {
+            window.location.href = "Home.html";
+        }
+        function changeToR(){
+            tester.textVal.innerHTML = lastResistance;
+        }
+        function changeToV(){
+            //tester.textVal.innerHTML = lastVolt;
+            tester.textVal.innerHTML = document.getElementById("voltageTextBox").value;
+            console.log("changed to volt");
+        }
+        function changeToI(){
+            tester.textVal.innerHTML = (document.getElementById("voltageTextBox").value/lastResistance);
+        }
+
+        n1 = null;
+        n2 = null;
+        clicks = 0;
+        function createNode(nodeId, compNum) {
+            let node = document.createElement('div');
+            node.className = 'node';
+            node.id = compNum + nodeId;
+            node.style.color = 'white';
+            node.connectedComponents = [];
+
+            /*r = null;
+            rToPass*/
+            node.r = 0;
+            node.rToPass = 0;
+            node.counterPart = null;
+            node.parent = null;
+            node.passed = false;
+
+            node.calculateResistance = function () {
+                console.log("-----------");
+                //console.log(passed);
+                console.log("Calculating resistance for node:", node.id);
+                console.log(node.r);
+                console.log("Connected components:", node.connectedComponents);
+                let s2Check = [];
+                for (let i = 0; i < node.connectedComponents.length; i++) {
+                    if (s2Check.length == 0) {
+                        const newArray = [];
+                        newArray.push(node.connectedComponents[i]);
+                        s2Check.push(newArray);
+                        console.log("MADE NEW ARRAY BECAUSE S2CHECK IS EMPTY");
+                    }
+                    else {
+                        //////////////////////////
+                        console.log("ZERO CHECKING: " + node.connectedComponents[i].connectedComponents.length);
+                        console.log(node.connectedComponents[i].connectedComponents[0].id);
+                        if(node.connectedComponents[i].connectedComponents.length == 1){
+                            const newArray = [];
+                            newArray.push(node.connectedComponents[i]);
+                            s2Check.push(newArray);
+                            console.log("MADE NEW ARRAY BECAUSE CONNECTED COMPONENT IS NOT CONNECTED TO ANYTHING ELSE");
+                        }
+                        else{
+                            eqCheck = false;
+                            ind = null;
+                            for (let z = 0; z < s2Check.length; z++) {
+                                let sortedS2Check = s2Check[z][0].connectedComponents.slice().sort(CompareComponent);
+                                let sortedS2Interval = node.connectedComponents[i].connectedComponents.slice().sort(CompareComponent);
+                                eq = CompareArray(sortedS2Check, sortedS2Interval);
+                                if (eq) {
+                                    eqCheck = true;
+                                    ind = z;
+                                    break;
+                                }
+                            }
+                            if (!eq) {
+                                const newArray = [];
+                                newArray.push(node.connectedComponents[i]);
+                                s2Check.push(newArray);
+                                console.log("MADE NEW ARRAY BECAUSE IT IS UNIQUE ARRAY");
+                            }
+                            else if (eq) {
+                                
+                                s2Check[ind].push(node.connectedComponents[i]);
+                                console.log("ADDED TO EXISTING ARRAY");
+                            }
+
+                        }   
+                        //////////////////
+
+                    }
+                }
+                
+                for (let i = 0; i < s2Check.length; i++) {
+                    let value = 0;
+                   console.log("arraygroup #" + i);
+                   console.log("s2CHECK LENGTH");
+                   console.log(s2Check[i].length);
+                   console.log(s2Check[i]);
+                    if (s2Check[i].length > 1) {
+                        for (let j = 0; j < s2Check[i].length; j++) {
+                            console.log("parallel:" + s2Check[i][j].r);
+                            console.log(s2Check[i][j].id);
+                            //value += (1 / parseFloat(s2Check[i][j].parent.r));
+                            value += (1 / parseFloat(s2Check[i][j].r));
+                        }
+                        console.log("1 / " + value);
+                        value = 1 / value;
+                        
+                    }
+                    else if (s2Check.length == 1) {
+                        console.log("series: " + s2Check[i][0].r);
+                        value += parseFloat(s2Check[i][0].r);
+                    }
+                    value += node.r;
+                    console.log("value += node.r;")
+                    console.log("node.r:" + node.r);
+                    console.log("node.rToPass:" + node.rToPass);
+
+
+
+                    
+                    for (let y = 0; y < s2Check[i].length; y++) {
+                        console.log("chekcheckcheck");
+                        console.log(s2Check[i][y]);
+                        console.log(s2Check[i][y]);
+                        s2Check[i][y].r += value;
+                        if(s2Check[i][y].parent.id != "tester"){
+                        s2Check[i][y].parent.rToPass = value;
+                        }
+                        for (let a = 0; a < s2Check[i][y].connectedComponents.length; a++) {
+                            console.log("LOGGGGGGGGGGGG");
+                            console.log(s2Check[i][y]);
+                            console.log(s2Check[i][y].connectedComponents[a].id);
+                            console.log(node.id);
+                            if (s2Check[i][y].connectedComponents[a].id == node.id) {
+                                s2Check[i][y].connectedComponents.splice(a, 1);                              
+                                break; 
+                            }
+                        }
+
+
+                        let connectedToTester = false;
+                        console.log("MYTEST");
+                        console.log(s2Check[i][0].id);
+
+                        for (let z = 0; z < s2Check[i][y].connectedComponents.length; z++) {
+
+                            if (s2Check[i][y].connectedComponents[z].id == "0testernode2") {
+                                // s2Check[i][y].calculateResistance();
+                                console.log("TESTER CHECK");
+                                console.log(s2Check[i][y].connectedComponents[z].id);
+                                connectedToTester = true;
+                                break;
+                            }
+                            //s2Check[i][y].calculateResistance();
+                        }
+
+                        console.log("PARENT PARENT PARENT");
+                        console.log(s2Check[i][y].parent);
+                        if (!connectedToTester) {
+                            s2Check[i][y].calculateResistance(); 
+                        }
+                        else{
+                            console.log("PUSHPUSHPUSH");
+                            //s2Check[i][y].parent.resistances.push("ASDFASDFASDF");
+                            resistancesVal.push(node.r);
+                        }
+
+                        //console.log("end");
+                        //s2Check[i][y].calculateResistance();
+                    }
+                    
+
+
+                }
+
+                console.log("AFTER CHECK");
+                console.log(node.id + " " + node.passed);
+                let connectedToTester = false;
+                testerIndex = null;
+                for(let c = 0; c < node.counterPart.connectedComponents.length; c++){                  
+                        if(node.counterPart.connectedComponents[c].id == "0testernode2"){
+                            connectedToTester = true;
+                            testerIndex = c;
+                            //console.log(node.counterPart.connectedComponents[c]);
+                            //console.log(node.counterPart.connectedComponents[c].parent);
+                           // console.log("TRIGGERED");
+                           /////////////////////////////////////////////////////// node.counterPart.connectedComponents[c].parent.resistances.push(node.counterPart.r);
+                            break;
+                        }
+                    }
+                if(!node.passed){
+                    console.log("COUNTER PART CHECK");
+                    console.log(node.id + " " + node.passed);
+                    console.log("asdf");
+                    node.counterPart.r += node.parent.r + node.r;
+                    console.log("node.parent.r: "+node.parent.r);
+                    console.log("node.parent.rToPass: "+node.parent.rToPass);
+                    console.log("node.counterpart.r");
+                    console.log(node.counterPart.r);
+                    node.counterPart.passed = true;
+                    node.passed = true;
+                        if(!connectedToTester){
+                        node.counterPart.calculateResistance();
+                        console.log("CALCU RES FOR " + node.counterPart.id);
+                        }
+                        else{
+                            //node.counterPart.connectedComponents[testerIndex].parent.resistances.push(node.counterPart.r);
+                            ////////////////////////////////////////////
+                            resistancesVal.push(node.counterPart.r);
+                            console.log("resistancesVal pushed node.counterPart.r uiuiuiuiuiuiuiuiuiuiuiui")
+                        }
+     
+                }
+
+            
+
+
+
+            };
+
+
+ // connection logic
+ node.addEventListener('click', function (event) {
+            for (let i = 0; i < node.connectedComponents.length; i++) {
+                console.log("con:" + node.connectedComponents[i].id);
+            }
+            const clickedNodeId = event.target.id;
+            if (clicks > 0) {
+                n2 = document.getElementById(clickedNodeId);
+                console.log("n1 and n2");
+                console.log(n1);
+                console.log(n2);
+                if (/*n1.type == "input" && n2.type == "input" || n1.type == "output" && n2.type == "output" || */n1.parent.id == n2.parent.id) {
+                    clicks = 0;
+                }
+                else {
+                    console.log("connected!!!!!!")
+                    let rect1 = fClick;
+                    let rect2 = n2.getBoundingClientRect();
+                    let containerRect = content.getBoundingClientRect();
+                    let x1 = rect1.left - containerRect.left + rect1.width / 2;
+                    let y1 = rect1.top - containerRect.top + rect1.height / 2;
+                    let x2 = rect2.left - containerRect.left + rect2.width / 2;
+                    let y2 = rect2.top - containerRect.top + rect2.height / 2;
+
+                    const line = document.createElement('div');
+                    line.className = 'line';
+                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                    line.parent = activeLine;
+                    line.style.width = length + 'px';
+                    line.style.height = '3px';
+                    line.style.left = (x1 - 0.5) + 'px'; // Subtract half of the line's thickness
+                    line.style.top = (y1 - 0.5) + 'px'; // Subtract half of the line's thickness
+                    line.style.position = 'relative';
+                    line.style.transformOrigin = 'top left';
+                    line.style.transform = 'rotate(' + angle + 'deg)';
+                    line.style.color = 'black';
+                    content.appendChild(line);
+
+                    fClick = null;
+                    activeLine.sNode = n2;
+                    console.log("ZZZZZZZZZZZZZOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPP");
+                    console.log(activeLine.sNode);
+
+                    line.con1 = n1;
+                    line.con2 = n2;
+
+                    console.log("n1:" + n1.id + "pushed n2:" + n2.id);
+                    console.log(n1);
+                    console.log("n2:" + n2.id + "pushed n1:" + n1.id);
+                    console.log(n2);
+
+                    if (n2.id != "0testernode1") {
+                        n1.connectedComponents.push(n2);
+                    }
+                    //n1.connectedComponents.push(n2);
+                    if (n1.id != "0testernode1") {
+                        n2.connectedComponents.push(n1);
+                    }
+                    //n2.connectedComponents.push(n1);
+
+                    clicks = 0;
+                    activeLine.linesArray.push(line);
+
+
+
+
+
+                line.parent.linesArray.forEach(function(line){
+                let lineElement = line.element;
+                //line.lineObj = lineObj;
+                console.log("PAERERERTTTNTTTTTT111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+                console.log(line.parent);
+
+                 line.addEventListener('click', function(event){
+                    if(selMode == "delete"){
+
+                        console.log("CHECKINNGGGg");
+                        console.log(line.parent.fNode);
+                        console.log(line.parent.sNode);
+
+                        let fNodeIndex = line.parent.fNode.connectedComponents.indexOf(line.parent.sNode);
+                        //runLogic(line.parent.fNode.parent);
+                        console.log("7878787878787867867856785678567856785678567856785678567856785678567856785678567856785678567856");
+                        console.log(line.parent.fNode.parent);
+                            if (fNodeIndex !== -1) {
+                                line.parent.fNode.connectedComponents.splice(fNodeIndex, 1); 
+                            }
+                            //runLogic(line.parent.sNode.parent);
+                            let sNodeIndex = line.parent.sNode.connectedComponents.indexOf(line.parent.fNode);
+                            if (sNodeIndex !== -1) {
+                                line.parent.sNode.connectedComponents.splice(sNodeIndex, 1); 
+                            }
+
+                            line.parent.fNode.input = false;
+                            line.parent.sNode.input = false;
+
+
+                            console.log("RUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+                            runLogic(line.parent.fNode.parent);
+                            runLogic(line.parent.sNode.parent);
+
+                            console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
+                            console.log("RUN LOGIC FNODE");
+                            runLogic(line.parent.fNode.parent);
+                            console.log(line.parent.fNode.parent);
+                            console.log("RUN LOGIC SNODE");
+                            runLogic(line.parent.sNode.parent);
+                            line.parent.linesArray.forEach(function(line){
+                                line.remove();
+                            });
+                        }
+                    });
+                });
+
+                activeLine = null;
+              
+
+
+                }
+                clicks = 0;
+            }
+            else {
+                n1 = document.getElementById(clickedNodeId);
+                let lineObj = {
+                    linesArray: [],
+                    fNode: null,
+                    sNode: null,
+                };
+                lineObj.fNode = n1;
+                console.log("QWEQWEQWEWEEERRTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+                console.log(lineObj.fNode);
+                fClick = n1.getBoundingClientRect();
+                activeLine = lineObj;
+
+               
+
+                /*
+                lineObj = {linesArray: [], fNode: null, sNode: null};
+                activeLine = lineObj;
+                activeFNode
+*/
+                clicks++;
+            }
+        }
+        );
+        return node;
+    }
+
+    fClick = null;
+    sClick = null;
+    // MULTILINE CONNECTION
+    container.addEventListener('click', function (event) {
+        if (clicks > 0 && !createComponentButton) {
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+
+
+            let rect1 = fClick;
+            let rect2 = new DOMRect(event.clientX, event.clientY, 0, 0);
+            let containerRect = content.getBoundingClientRect();
+            let x1 = rect1.left - containerRect.left + rect1.width / 2;
+            let y1 = rect1.top - containerRect.top + rect1.height / 2;
+            let x2 = rect2.left - containerRect.left + rect2.width / 2;
+            let y2 = rect2.top - containerRect.top + rect2.height / 2;
+
+            const line = document.createElement('div');
+            line.parent = activeLine;
+            line.className = 'line';
+            const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            line.style.width = length + 'px';
+            line.style.height = '3px';
+            line.style.left = (x1 - 0.5) + 'px'; // Subtract half of the line's thickness
+            line.style.top = (y1 - 0.5) + 'px'; // Subtract half of the line's thickness
+            line.style.position = 'relative';
+            line.style.transformOrigin = 'top left';
+            line.style.transform = 'rotate(' + angle + 'deg)';
+            line.style.color = 'black';
+            activeLine.linesArray.push(line);
+            content.appendChild(line);
+
+            fClick = rect2;
+
+
+
+            console.log("Clicked at: ", x, y);
+        }
+    });
+
+
+        componentCounter = 1;
+        function createComponent(x, y) {
+            let node1 = createNode('node1', componentCounter);
+            let node2 = createNode('node2', componentCounter);
+
+            node1.counterPart = node2;
+            node2.counterPart = node1;
+
+            node1.style.position = 'absolute';
+            node1.style.top = '50%';
+            //node1.style.left = '50%';
+            node1.style.transform = 'translate(-50%, -50%)';
+            node1.style.right = 'calc(50% + 75px)';
+
+
+            node2.style.position = 'absolute';
+            node2.style.top = '50%';
+            //node2.style.left = '50%';
+            node2.style.transform = 'translate(-50%, -50%)';
+            node2.style.left = 'calc(50% + 75px)';
+
+            
+
+
+            let component = document.createElement('div');
+            component.id = "component" + componentCounter;
+            component.className = 'component';
+            component.style.position = 'absolute';
+            component.style.left = `${x - 50}px`;
+            component.style.top = `${y - 25}px`;
+
+            component.componentType = "component";
+
+            node1.parent = component;
+            node2.parent = component;
+
+            component.appendChild(node1);
+            component.appendChild(node2);
+            document.body.appendChild(component);
+
+
+
+            component.addEventListener("click", function (event) {
+                console.log("=============================================");
+                console.log("COMPONENT:" + component.id);
+                console.log("node1rToPass:" + node1.rToPass);
+                console.log("node2rToPass:" + node2.rToPass);
+                console.log("component.r:" + component.r);
+                console.log("component.rToPass:" + component.rToPass);
+                console.log("node1parent:" + node1.parent.id);
+                console.log("node2parent:" + node2.parent.id);
+
+
+                console.log("node1.r:" + node1.r);
+                console.log("node2.r:" + node2.r);
+
+
+                //console.log("node1's Counterpart:" + node1.counterPart.id);
+                //console.log("node2's Counterpart:" + node2.counterPart.id);
+                
+
+                for (let i = 0; i < node1.connectedComponents.length; i++) {
+                   // console.log("node1: " + node1.connectedComponents[i].id);
+                   // console.log("r=" + node1.connectedComponents[i].r);
+                   // console.log("rToPass=" + node1.connectedComponents[i.rToPass]);
+                }
+                for (let i = 0; i < node2.connectedComponents.length; i++) {
+                   // console.log("node2: " + node2.connectedComponents[i].id);
+                    //console.log("r=" + node2.connectedComponents[i].r);
+                    //console.log("rToPass=" + node1.connectedComponents[i.rToPass]);
+                }
+                //console.log("Node1 r:", node1.r);
+               // console.log("Node2 r:", node2.r);
+               console.log("=============================================");
+            });
+
+            let textBox = document.createElement('input');
+            textBox.type = 'number';
+            textBox.style.width = '40px';
+            textBox.style.marginTop = '60px';
+            textBox.style.height = '20px';
+            textBox.placeholder = 'Enter text...';
+
+            //let inputValue = 0;
+
+
+            textBox.addEventListener('input', function () {
+                let inputValue = textBox.value; 
+
+                if (!isNaN(parseFloat(inputValue))) {
+                    inputValue = parseFloat(inputValue); 
+                    component.r = inputValue;
+                    //component.rToPass = inputValue;
+                    //node1.r = inputValue;
+                    //node2.r = inputValue;
+                } else {
+                    console.log("Invalid input for resistance");
+                }
+            });
+            component.appendChild(textBox);
+
+
+
+
+            component.r = 0;
+            component.rToPass = 0;
+
+
+            //node1.r = component.r;
+           // node2.r = component.r;
+
+
+
+
+
+
+            componentCounter++;
+        }
+
+
+        var createComponentButton = false;
+        function ButtonClicked() {
+            createComponentButton = true;
+            console.log(createComponentButton);
+        }
+
+        container.addEventListener('click', function (event) {
+            if (createComponentButton === true) {
+                createComponent(event.clientX, event.clientY);
+                createComponentButton = false;
+            }
+        })
+
+
+        function CompareComponent(a, b) {
+            return a.count - b.count;
+        }
+        function CompareArray(arr1, arr2) {
+            if (arr1.length !== arr2.length) {
+                return false;
+            }
+
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i].id !== arr2[i].id) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        let tester;
+        var testerNode2;
+        var testerNode1;
+        resistancesVal = [];
+        function createTester(x, y) {
+            testerNode1 = createNode('testernode1', 0);
+            testerNode2 = createNode('testernode2', 0);
+
+            testerNode1.style.position = 'absolute';
+            testerNode1.style.top = '50%';
+            //node1.style.left = '50%';
+            testerNode1.style.transform = 'translate(-50%, -50%)';
+            testerNode1.style.right = 'calc(50% + 75px)';
+
+
+            testerNode2.style.position = 'absolute';
+            testerNode2.style.top = '50%';
+            //node2.style.left = '50%';
+            testerNode2.style.transform = 'translate(-50%, -50%)';
+            testerNode2.style.left = 'calc(50% + 75px)';
+
+
+            tester = document.createElement('div');
+            tester.className = 'tester';
+            tester.style.position = 'absolute';
+            tester.style.left = `${x - 50}px`;
+            tester.style.top = `${y - 25}px`;
+
+            tester.componentType = "tester";
+            tester.id = "tester";
+
+            
+            testerNode1.parent = tester;
+            testerNode2.parent = tester;
+
+            textVal = document.createElement('p');
+            textVal.style.color = "White";
+            tester.appendChild(textVal);
+
+            tester.textVal = textVal;
+
+
+            tester.appendChild(testerNode1);
+            tester.appendChild(testerNode2);
+            document.body.appendChild(tester);
+
+            testerNode2.parent = tester;
+
+
+            tester.resistances = [];
+            
+            tester.addEventListener("click", function (event) {
+
+            console.log("TESTER RESISTANCES:" + tester.resistances);
+
+
+
+                for (let i = 0; i < testerNode1.connectedComponents.length; i++) {
+                    console.log("node1: " + testerNode1.connectedComponents[i].id);
+                }
+                for (let i = 0; i < testerNode2.connectedComponents.length; i++) {
+                    console.log("node2: " + testerNode2.connectedComponents[i].id);
+                }
+            });
+
+
+            tester.runResistance = function (con1, con2) {
+                for (let i = 0; i < testerNode1.connectedComponents.length; i++) {
+                        
+                    con1[i].parent.rToPass = con1[i].parent.r;
+                    con1[i].calculateResistance();
+                }
+
+
+
+
+                if(resistancesVal.length > 1){
+                    rVal =0;
+                    for(let i = 0; i < resistancesVal.length; i++){
+                        rVal += 1/resistancesVal[i];
+                    }
+                    rVal = 1/rVal;
+                    lastResistance = rVal;
+                }
+                else{
+                    rVal =0;
+                    lastResistance = resistancesVal[0];
+                    lastVolt = document.getElementById("voltageTextBox").value;
+                }
+                //lastResistance
+                tester.textVal.innerHTML = "";
+                tester.textVal.innerHTML = lastResistance;
+                
+
+            }
+        }
+        lastAmp = 0;
+        lastVolt = 0;
+        lastResistance = 0;
+        createTester(500, 200);
+        console.log("TESTSETSETSETSEt");
+    </script>
+
+
+
+</body>
+</html>

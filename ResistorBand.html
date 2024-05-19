@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="resistorBand.css">
+  </head>
+  <style>
+    .parentContainer
+    {
+      display: flex;
+      width: 100%;
+      height: 94%; 
+    }
+    .ComponentContainer, .OutputContainer
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50%; 
+      height: 100vh; 
+      flex-direction: column;
+    }
+    .ohmmeter
+    {
+      width: 350px;
+      height: 300px;
+      background-color: #ffbe27;
+      margin-top: 20px;
+      border: solid 1px black;
+      margin-left: 20px;
+    }
+    .ComponentContainer
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50%;
+      height: 100vh;
+      flex-direction: column;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .OutputContainer
+    {
+      margin-right: 10%;
+    }
+    .resistor
+    {
+      position: relative;
+      width: 270px;
+      height: 100px;
+      background-color: #f5d68c;
+      border: solid 1px black;
+      margin-bottom: 20%;
+    }
+    .band1, .band2, .band3, .band4, .band5
+    {
+      position: absolute;
+      width: 20px;
+      height: 100%;
+      top: 0;
+    }
+    .band1
+    {
+      left: 20%;
+      background-color: black;
+    }
+    .band2
+    {
+      left: 35%;
+      background-color: black;
+    }
+    .band3
+    {
+      left: 50%;
+      background-color: black;
+    }
+    .band4
+    {
+      left: 65%;
+      background-color: black;
+    }
+    .band5
+    {
+      left: 80%;
+      background-color: brown;
+    }
+    .OutputContainer
+    {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-size: 16px;
+    }
+    .ValueCalculator
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 20%;
+      width: 70%;
+    }
+    .Information
+    {
+      display: flex;
+    }
+    .BandColors, .BandAttributes
+    {
+      display: flex;
+      flex-direction: column;
+      margin: 0 30px;
+      align-items: center;
+      text-align: center;
+    }
+    .BandColors p, .BandAttributes p
+    {
+      white-space: nowrap;
+      margin-bottom: 5px;
+    }
+    .NumericalValue
+    {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+      align-items: center;
+    }
+    .RValRow
+    {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 10px;
+      align-items: center;
+      margin: 0 10px;
+    }
+    .RValText, .RUnitText
+    {
+      text-align: center;
+    }
+    .RValInput, .SelectUnit
+    {
+      display: flex;
+      justify-content: center;
+    }
+    select, input
+    {
+      font-size: 16px;
+    }
+    .box-container
+    {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .box
+    {
+      width: 170px;
+      height: 50px;
+      background-color: #d0e1e8;
+      border: 4px solid black;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .box p
+    {
+      margin: 0;
+    }
+  </style>
+
+  <body>
+    <div class="top">
+      <input class="modal-btn-home" type="checkbox" id="modal-btn-home" name="modal-btn-home" onclick="homePage();" />
+      <label class="label-home" for="modal-btn-home">HOME</label>
+      <input class="modal-btn-resource" type="checkbox" id="modal-btn-resource" name="modal-btn-resource" />
+      <label class="label-resource" for="modal-btn-resource">RESOURCES</label>
+      <div class="modal-resource">
+          <div class="modal-wrap-resource">
+              <img src="batteryy.png" alt="">
+              <p>Battery is the main source of energy that provides a voltage which allows the current to flow
+                  through.</p>
+              <img src="resistorr.PNG" alt="">
+              <p>A resistor is an electrical component that limits or regulates the flow of electrical current in an
+                  electronic circuit. Resistors can also be used to provide a specific voltage for an active device
+                  such
+                  as a transistor.</p>
+              <img src="ledd.png" alt="">
+              <p>An LED (Light Emitting Diode) emits light when an electric current passes through it. The simplest
+                  circuit
+                  to power an LED is a voltage source with a resistor and an LED in series.</p>
+          </div>
+      </div>
+      <input class="modal-btn-about" type="checkbox" id="modal-btn-about" name="modal-btn-about" />
+      <label class="label-about" for="modal-btn-about">ABOUT</label>
+      <div class="modal-about">
+          <div class="modal-wrap-about">
+              <p>We think that the time has come for electronics design software to advance as well-user-friendly
+                  tools that take use of web-based distribution to make content immediately and everywhere available.
+                  Process and work together, just a few clicks, simulate, experiment, modify, and share the outcomes.
+                  By simplifying design and analysis, we can enable a new generation of engineers and enthusiasts to
+                  create the systems that will influence the future of the planet. This online circuit builder is an
+                  interactive tool that allows users to easily create, adjust, and evaluate electronic circuits and
+                  electronic components. The application features an interface that includes basic electronic
+                  components that are used in studying and applied in computer systems such as resistors, integrated
+                  circuits, and light emitting diodes. Users are also capable of creating their own basic electronic
+                  circuits and manipulate the values and connections of the electronic components for testing and
+                  evaluation.
+              </p>
+              <p>-Kaboom Integrated Circuit Builder Team-</p>
+          </div>
+      </div>
+      <input class="modal-btn-contact" type="checkbox" id="modal-btn-contact" name="modal-btn-contact" />
+      <label class="label-contact" for="modal-btn-contact">CONTACT</label>
+      <div class="modal-contact">
+          <div class="modal-wrap-contact">
+              <img src="kaboom.png" alt="">
+              <h1>Contact us</h1>
+              <p>(+63)9052545655</p>
+              <p>(+63)9695867299</p>
+              <p>Support@kaboom.com</p>
+          </div>
+      </div>
+    </div>
+    <div class="parentContainer">
+      <div class="ComponentContainer">
+        <div class="resistor">
+          <div id="band1" class="band1"></div>
+          <div id="band2" class="band2"></div>
+          <div id="band3" class="band3"></div>
+          <div id="band4" class="band4"></div>
+          <div id="band5" class="band5"></div>
+        </div>
+        <div class="ohmmeter">
+          <br><br>
+          <div class="box-container">
+            <div class="box"></div>
+            <p>Theoretical Resistance</p>
+            <br>
+            <div class="box"></div>
+            <p>Tested Resistance</p>
+          </div>
+        </div>
+      </div>
+      <div class="OutputContainer">
+        <div class="ValueCalculator">
+          <div class="Information">
+            <div class="BandColors">
+              <p id="Band1-1">Enter the first band</p>
+              <select id="Band1">
+                <option value="black">Black</option>
+                <option value="brown">Brown</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+                <option value="orange">Orange</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="violet">Violet</option>
+                <option value="gray">Gray</option>
+                <option value="white">White</option>
+              </select><br>
+              <p>Enter the second band</p>
+              <select id="Band2">
+                <option value="black">Black</option>
+                <option value="brown">Brown</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+                <option value="orange">Orange</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="violet">Violet</option>
+                <option value="gray">Gray</option>
+                <option value="white">White</option>
+              </select><br>
+              <p>Enter the third band</p>
+              <select id="Band3">
+                <option value="black">Black</option>
+                <option value="brown">Brown</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+                <option value="orange">Orange</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="violet">Violet</option>
+                <option value="gray">Gray</option>
+                <option value="white">White</option>
+              </select>
+            </div>
+            <div class="BandAttributes">
+              <p>Enter the multiplier</p>
+              <select id="Multiplier">
+                <option value="black" val="1e0">Black</option>
+                <option value="brown" val="1e1">Brown</option>
+                <option value="red" val="1e2">Red</option>
+                <option value="orange" val="1e3">Orange</option>
+                <option value="yellow" val="1e4">Yellow</option>
+                <option value="green" val="1e5">Green</option>
+                <option value="blue" val="1e6">Blue</option>
+                <option value="violet" val="1e7">Violet</option>
+                <option value="gray" val="1e8">Gray</option>
+                <option value="white" val="1e9">White</option>
+              </select><br>
+              <p>Enter the tolerance</p>
+              <select id="Tolerance">
+                <option value="brown", val="0.01">Brown</option>
+                <option value="red", val="0.02">Red</option>
+                <option value="green", val="0.05">Green</option>
+                <option value="blue", val="0.25">Blue</option>
+                <option value="violet", val="0.1">Violet</option>
+                <option value="gold", val="0.5">Gold</option>
+                <option value="silver", val="0.1">Silver</option>
+              </select><br>
+              <p>Enter the number of bands</p>
+              <select id="BandNo">
+                <option value= "5">5 band</option>
+                <option value= "4">4 band</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="NumericalValue">
+          <div class="RValRow">
+            <div class="RValText"><p>Enter the resistance value</p></div>
+            <div class="RUnitText"><p>Select the unit</p></div>
+            <div class="RValInput">
+              <input type="number" id="txtnum" placeholder="Enter a Number" oninput="Inputval()">
+            </div>
+            <div class="SelectUnit">
+              <select id="RNotation">
+                <option value="1000000">megaohms (MΩ)</option>
+                <option value="1000">kiloohms (kΩ)</option>
+                <option value="1">ohms (Ω)</option>
+              </select>
+            </div>
+          </div>
+        </div>            
+      </div>
+    </div>
+  </body>
+  <script>
+    var colorMapping =
+    {
+      black: { color: 'black', value: 0, multiplier: 1, tolerance: null },
+      brown: { color: 'brown', value: 1, multiplier: 10, tolerance: 0.01 },
+      red: { color: 'red', value: 2, multiplier: 100, tolerance: 0.02 },
+      orange: { color: 'orange', value: 3, multiplier: 1000, tolerance: null },
+      yellow: { color: 'yellow', value: 4, multiplier: 10000, tolerance: null },
+      green: { color: 'green', value: 5, multiplier: 100000, tolerance: 0.005 },
+      blue: { color: 'blue', value: 6, multiplier: 1000000, tolerance: 0.0025 },
+      violet: { color: 'violet', value: 7, multiplier: 10000000, tolerance: 0.001 },
+      gray: { color: 'gray', value: 8, multiplier: 100000000, tolerance: 0.0005 },
+      white: { color: 'white', value: 9, multiplier: 1000000000, tolerance: null },
+      gold: { color: 'gold', value: null, multiplier: 0.1, tolerance: 0.05 },
+      silver: { color: 'silver', value: null, multiplier: 0.01, tolerance: 0.1 }
+    };
+
+    var bands =
+    [
+      { selectId:'Band1', bandId:'band1'},
+      { selectId:'Band2', bandId:'band2'},
+      { selectId:'Band3', bandId:'band3'},
+      { selectId:'Multiplier', bandId:'band4'},
+      { selectId:'Tolerance', bandId:'band5'}
+    ];
+    bands.forEach(({ selectId, bandId }) =>
+    {
+      document.getElementById(selectId).addEventListener('change', function()
+      {
+        const color = this.value;
+        document.getElementById(bandId).style.backgroundColor = colorMapping[color].color;
+        calculateResistance();
+      });
+    });
+    document.getElementById('BandNo').addEventListener('change', function()
+    {
+      calculateResistance();
+    });
+
+    function calculateResistance(num)
+    {
+      const band1Value = colorMapping[document.getElementById('Band1').value].value;
+      const band2Value = colorMapping[document.getElementById('Band2').value].value;
+      const band3Value = colorMapping[document.getElementById('Band3').value].value;
+      const multiplier = parseFloat(colorMapping[document.getElementById('Multiplier').value].multiplier);
+      const bandNo = parseInt(document.getElementById('BandNo').value);
+      let resistanceValue;
+      if (bandNo == "4")
+      {
+        resistanceValue = (band2Value * 10 + band3Value) * multiplier;
+        document.getElementById('band1').style.backgroundColor = '#f5d68c';
+        document.getElementById('Band1').style.display = 'none';
+        document.getElementById('Band1-1').style.display = 'none';
+      }
+      else
+      {
+        const band1Value = colorMapping[document.getElementById('Band1').value].value;
+        resistanceValue = (band1Value * 100 + band2Value * 10 + band3Value) * multiplier;
+        document.getElementById('Band1').style.display = 'initial';
+        document.getElementById('Band1-1').style.display = 'initial';
+      }
+      const notation = document.getElementById('RNotation').value;
+      let displayValue;
+      switch (notation)
+      {
+        case '1000000':
+          displayValue = resistanceValue / 1000000 + ' MΩ';
+          break;
+        case '1000':
+          displayValue = resistanceValue / 1000 + ' kΩ';
+          break;
+        default:
+          displayValue = resistanceValue + ' Ω';
+          break;
+      }  
+      console.log("Resistance Value: " + displayValue);
+      console.log("Resistance Value: " + resistanceValue + ' Ω');
+      document.getElementById('txtnum').value = resistanceValue / notation;
+      ToleranceVal();
+    }
+
+    function homePage()
+    {
+      window.location.href = "Home.html";
+    }
+
+    function ToleranceVal()
+    {
+      const resistanceValue = parseFloat(document.getElementById('txtnum').value);
+      const toleranceColor = document.getElementById('Tolerance').value;
+      const tolerance = parseFloat(colorMapping[toleranceColor].tolerance);      
+      let adjustedResistance;
+      switch (toleranceColor)
+      {
+        case 'brown':
+          var min = resistanceValue * 0.99;
+          var max = resistanceValue * 1.01;
+          break;
+        case 'red':
+          var min = resistanceValue * 0.98;
+          var max = resistanceValue * 1.02;  
+          break;     
+        case 'green':
+          var min = resistanceValue * 0.995;
+          var max = resistanceValue * 1.005;  
+          break;       
+        case 'blue':
+          var min = resistanceValue * 0.9975;
+          var max = resistanceValue * 1.0025;        
+          break; 
+        case 'violet':
+          var min = resistanceValue * 0.999;
+          var max = resistanceValue * 1.001;
+          break;
+        case 'gold':
+          var min = resistanceValue * 0.95;
+          var max = resistanceValue * 1.05;
+          break;
+        case 'silver':
+          var min = resistanceValue * 0.9;
+          var max = resistanceValue * 1.1;
+          break;
+        default:
+          console.log("Invalid tolerance color.");
+          return;
+      }
+      TestedResistance = Math.floor(Math.random() * (max - min + 1)) + min;
+      return TestedResistance;
+      console.log("Adjusted Resistance Value: " + adjustedResistance);
+    }
+    document.getElementById('Tolerance').addEventListener('change', function()
+    {
+      ToleranceVal();
+    });
+
+    function DefaultNotation()
+    {
+      document.getElementById('RNotation').value = '1000';
+    }
+    document.addEventListener('DOMContentLoaded', function()
+    {
+      DefaultNotation();
+    });
+
+    /*
+    function NewNotation()
+    {
+      const resistanceValue = parseFloat(document.getElementById('txtnum').value);
+      const notation = parseFloat(document.getElementById('RNotation').value);
+      let displayValue;
+      switch (notation)
+      {
+        case '1000000':
+          displayValue = resistanceValue / 1000000 + ' MΩ';
+          break;
+        case '1000':
+          displayValue = resistanceValue / 1000 + ' kΩ';
+          break;
+        default:
+          displayValue = resistanceValue + ' Ω';
+          break;
+      }  
+      console.log("Resistance Value: " + displayValue);
+      document.getElementById('txtnum').value = resistanceValue / notation;
+    }
+    document.getElementById('RNotation').addEventListener('change', function()
+    {
+      NewNotation();
+    });
+    */
+
+    function ActualTheoretical(number)
+    {
+      switch (number)
+      {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+          console.log("Actual resistor.");
+          break;
+        default:
+          console.log("Theoretical resistor.");
+          break;
+      }
+    }
+
+  </script>
+</html>

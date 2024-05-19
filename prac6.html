@@ -1,0 +1,519 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <style>
+        body{
+            background-color:#202020;
+        }
+        .node{
+            width:15px;
+            height:15px;
+            background-color:white;
+            border: 2px solid transparent;
+        }
+        .node:hover{
+            border:2px solid black;
+        }
+        #container {
+            border: 3px solid black;
+            width: 1500px;
+            height: 1500px;
+        }
+        .component{
+            background-color:red;
+            width:50px;
+            height:50px;
+            display:flex;
+        }
+        .tester{
+            background-color: blue;
+            width: 50px;
+            height: 50px;
+            display: flex;
+        }
+        .line {
+            background-color: black;
+            z-index: 1; /* Ensure the line is on top of squares */
+        }
+    </style>
+
+</head>
+<body>
+    <button id="createSquareBtn" onclick="ButtonClicked()">Create Square</button>
+    <button onclick="tester.runResistance(testerNode1.connectedComponents, testerNode2.connectedComponents)">Calculate Resistance</button>
+    <div id="container">
+        <!-- Squares will be dynamically added here -->
+    </div>
+   
+
+    <script>
+         toCheck = null;
+         function checkConnectionParallel(nd, lastNode){
+            var isConnected = false;
+            nd.parallelPassed = true;
+               for(let i = 0; i < nd.connectedComponents.length; i++){
+                    if(nd.connectedComponents[i].parent.id == toCheck.parent.id/*toCheck.id*/ && nd.connectedComponents[i] != lastNode){
+                        return true;
+                        break;
+                    }    
+               } 
+               for(let i = 0; i < nd.connectedComponents.length; i++){
+                if(!nd.connectedComponents[i].parallelPassed && !isConnected){
+                        if(!isConnected && nd.connectedComponents[i].connectedComponents.length > 0){
+                            isConnected = checkConnectionParallel(nd.connectedComponents[i], nd);
+                            if(isConnected){
+                                //console.log("returned");
+                                break;
+                            }
+                            if(nd.connectedComponents[i].counterPart.connectedComponents.length > 0){
+                                isConnected = checkConnectionParallel(nd.connectedComponents[i].counterPart, nd);
+                                if(isConnected){
+                                    //console.log("returned");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+               // console.log(isConnected);
+            return isConnected;
+         }
+        function checkConnection(nd, lastNode){
+            var isConnected = false;
+           console.log(" TESTER CHECK PASSED THROUGH " + nd.id);
+            nd.tempPassed = true;
+               for(let i = 0; i < nd.connectedComponents.length; i++){
+                    if(nd.connectedComponents[i].id == "0testernode2"/*toCheck.id*/ && nd.connectedComponents[i] != lastNode && nd.connectedComponents[i].id != toCheck.counterPart.id){
+                        console.log("MET AT " + nd.id);
+                        return true;
+                        break;
+                    }    
+               } 
+               for(let i = 0; i < nd.connectedComponents.length; i++){
+                if(!nd.connectedComponents[i].tempPassed && !isConnected){
+                    //console.log("CONNECTION CHECKED " + nd.connectedComponents[i].id);
+                        if(!isConnected && nd.connectedComponents[i].connectedComponents.length > 0 && nd.connectedComponents[i].id != lastNode.id){
+                            isConnected = checkConnection(nd.connectedComponents[i], nd);
+                            if(isConnected){
+                                console.log("returned" + nd.connectedComponents[i].id);
+                                break;
+                            }
+                            if(nd.connectedComponents[i].counterPart.connectedComponents.length > 0){
+                                isConnected = checkConnection(nd.connectedComponents[i].counterPart, nd);
+                                if(isConnected){
+                                    console.log("returned" + nd.connectedComponents[i].id);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                console.log(isConnected + " FOR " + nd.id);
+            return isConnected;
+        }
+
+
+        nodeArray = [];
+        n1 = null;
+        n2 = null;
+        clicks = 0;
+        function createNode(nodeId, compNum) {
+            
+            let node = document.createElement('div');
+            nodeArray.push(node);
+            node.className = 'node';
+            node.id = compNum + nodeId;
+            node.style.color = 'white';
+            node.connectedComponents = [];
+            node.r = 0;
+            node.rToPass = 0;
+            node.counterPart = null;
+            node.parent = null;
+            node.passed = false;
+            node.nResistances = [];
+            node.tempPassed = false;
+            node.parallelPassed = false;
+            node.path = [];
+            
+
+            node.calculateResistance = function () {
+             
+            };
+
+            // connection logic
+            node.addEventListener('click', function (event) {
+      
+                for (let i = 0; i < node.connectedComponents.length; i++) {
+                    console.log("con:" + node.connectedComponents[i].id);
+                }
+
+                const clickedNodeId = event.target.id;
+                if (clicks > 0) {
+                    n2 = document.getElementById(clickedNodeId);
+
+                    let rect1 = n1.getBoundingClientRect();
+                    let rect2 = n2.getBoundingClientRect();
+
+                    let x1 = rect1.left + rect1.width / 2;
+                    let y1 = rect1.top + rect1.height / 2;
+                    let x2 = rect2.left + rect2.width / 2;
+                    let y2 = rect2.top + rect2.height / 2;
+
+
+                    const line = document.createElement('div');
+                    line.className = 'line';
+
+
+
+                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                    line.style.width = length + 'px';
+                    line.style.height = '1px'; 
+                    line.style.left = x1 + 'px';
+                    line.style.top = y1 + 'px';
+                    line.style.position = 'absolute';
+                    line.style.transformOrigin = 'top left';
+                    line.style.transform = 'rotate(' + angle + 'deg)';
+                    line.style.color = 'black';
+                    container.appendChild(line);
+
+                    if (n2.id != "0testernode1") {
+                        n1.connectedComponents.push(n2);
+                    }
+                    if (n1.id != "0testernode1") {
+                        n2.connectedComponents.push(n1);
+                    }
+
+                    clicks = 0;
+
+                }
+                else {
+                    n1 = document.getElementById(clickedNodeId);
+                    clicks++;
+                }
+
+            });
+            return node;
+        }
+
+
+        componentCounter = 1;
+        function createComponent(x, y) {
+            let node1 = createNode('node1', componentCounter);
+            let node2 = createNode('node2', componentCounter);
+
+            node1.counterPart = node2;
+            node2.counterPart = node1;
+
+            node1.style.position = 'absolute';
+            node1.style.top = '50%';
+            //node1.style.left = '50%';
+            node1.style.transform = 'translate(-50%, -50%)';
+            node1.style.right = 'calc(50% + 75px)';
+
+
+            node2.style.position = 'absolute';
+            node2.style.top = '50%';
+            //node2.style.left = '50%';
+            node2.style.transform = 'translate(-50%, -50%)';
+            node2.style.left = 'calc(50% + 75px)';
+
+            
+
+
+            let component = document.createElement('div');
+            component.id = "component" + componentCounter;
+            component.innerHTML = String(componentCounter);
+            component.className = 'component';
+            component.style.position = 'absolute';
+            component.style.left = `${x - 50}px`;
+            component.style.top = `${y - 25}px`;
+
+            component.componentType = "component";
+
+            node1.parent = component;
+            node2.parent = component;
+
+
+
+            component.connectedtoTester = false;
+
+
+
+            component.appendChild(node1);
+            component.appendChild(node2);
+            document.body.appendChild(component);
+
+
+
+            component.addEventListener("click", function (event) {
+                console.log("=============================================");
+                console.log("COMPONENT:" + component.id);
+                console.log("node1rToPass:" + node1.rToPass);
+                console.log("node2rToPass:" + node2.rToPass);
+                console.log("component.r:" + component.r);
+                console.log("component.rToPass:" + component.rToPass);
+                console.log("node1parent:" + node1.parent.id);
+                console.log("node2parent:" + node2.parent.id);
+
+
+                console.log("node1.r:" + node1.r);
+                console.log("node2.r:" + node2.r);
+
+
+                console.log("passed");
+                console.log(node1.passed);
+                console.log(node2.passed);
+       
+
+                for (let i = 0; i < node1.connectedComponents.length; i++) {
+
+                }
+                for (let i = 0; i < node2.connectedComponents.length; i++) {
+
+                }
+
+               console.log("=============================================");
+            });
+
+            let textBox = document.createElement('input');
+            textBox.type = 'number';
+            textBox.style.width = '40px';
+            textBox.style.marginTop = '60px';
+            textBox.style.height = '10px';
+            textBox.placeholder = 'Enter text...';
+
+            //let inputValue = 0;
+
+
+            textBox.addEventListener('input', function () {
+                let inputValue = textBox.value; 
+
+                if (!isNaN(parseFloat(inputValue))) {
+                    inputValue = parseFloat(inputValue); 
+                    component.r = inputValue;
+                } else {
+                    console.log("Invalid input for resistance");
+                }
+            });
+            component.appendChild(textBox);
+
+
+
+
+            component.r = 0;
+            component.rToPass = 0;
+
+
+
+
+            componentCounter++;
+        }
+
+
+        var createComponentButton = false;
+        function ButtonClicked() {
+            createComponentButton = true;
+            console.log(createComponentButton);
+        }
+
+        container.addEventListener('click', function (event) {
+            if (createComponentButton === true) {
+                createComponent(event.clientX, event.clientY);
+                createComponentButton = false;
+            }
+        })
+
+
+        function CompareComponent(a, b) {
+            return a.count - b.count;
+        }
+        function CompareArray(arr1, arr2) {
+            if (arr1.length !== arr2.length) {
+                return false;
+            }
+
+            for (let i = 0; i < arr1.length; i++) {
+                if (arr1[i].id !== arr2[i].id) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        let tester;
+        var testerNode2;
+        var testerNode1;
+        function createTester(x, y) {
+            testerNode1 = createNode('testernode1', 0);
+            testerNode2 = createNode('testernode2', 0);
+
+            
+
+            testerNode1.style.position = 'absolute';
+            testerNode1.style.top = '50%';
+            //node1.style.left = '50%';
+            testerNode1.style.transform = 'translate(-50%, -50%)';
+            testerNode1.style.right = 'calc(50% + 75px)';
+
+
+            testerNode2.style.position = 'absolute';
+            testerNode2.style.top = '50%';
+            //node2.style.left = '50%';
+            testerNode2.style.transform = 'translate(-50%, -50%)';
+            testerNode2.style.left = 'calc(50% + 75px)';
+
+
+            tester = document.createElement('div');
+            tester.className = 'tester';
+            tester.style.position = 'absolute';
+            tester.style.left = `${x - 50}px`;
+            tester.style.top = `${y - 25}px`;
+
+            tester.componentType = "tester";
+            tester.id = "tester";
+
+            tester.appendChild(testerNode1);
+            tester.appendChild(testerNode2);
+            document.body.appendChild(tester);
+
+            testerNode2.parent = tester;
+            testerNode1.parent = tester;
+            //
+            //
+            tester.resistances = [];
+            
+            tester.addEventListener("click", function (event) {
+
+            console.log("TESTER RESISTANCES:" + tester.resistances);
+
+
+
+                for (let i = 0; i < testerNode1.connectedComponents.length; i++) {
+                    console.log("node1: " + testerNode1.connectedComponents[i].id);
+                }
+                for (let i = 0; i < testerNode2.connectedComponents.length; i++) {
+                    console.log("node2: " + testerNode2.connectedComponents[i].id);
+                }
+            });
+
+
+            tester.runResistance = function (con1, con2) {
+
+                let componentGroup = [];
+
+
+                programRun(testerNode1, componentGroup, "", null);
+                console.log(componentGroup);
+
+
+
+
+
+
+/*
+                console.log("calc res");
+                console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+                for (let i = 0; i < testerNode1.connectedComponents.length; i++) {
+                    
+                    console.log("iter:" + i);
+                    console.log("connectedComponent:" + con1[i].id);
+                    console.log("con1[i].parent:" + con1[i].parent.id);
+                    console.log("r of parent:" + con1[i].parent.r);
+                    con1[i].parent.rToPass = con1[i].parent.r;
+                    con1[i].calculateResistance();
+                }
+                */
+            }
+        }
+        //componentGroup = [];
+        function connectionToTester(){
+            
+        }
+        componentGroup = [];
+        function programRun(nd1, arr, type , lastNd){
+            toCheck = nd1;
+
+
+           // checkTstr = checkConnection(nd1, nd1.connectedComponents[i]);
+           // checkPar = checkConnectionParallel((nd1, nd1.connectedComponents[i]));
+           /* for(let i = 0; i < nodeArray.length; i++){
+                                nodeArray[i].tempPassed = false;
+                                nodeArray[i].parallelPassed = false;
+                            }
+*/
+
+
+
+                if(nd1.connectedComponents.length > 1/* && checkTstr && checkPar*/){
+                    console.log("PARALLEL START HERE !@#!@#!@#!@#!@#!@#!@#!@#!@#!#");
+                    var comp = { type: "parallel", array: [] };
+                    for(let i = 0; i < nd1.connectedComponents.length; i++){
+                            checkTstr = checkConnection(nd1, nd1.connectedComponents[i]);
+                            checkPar = checkConnectionParallel((nd1, nd1.connectedComponents[i]));
+                            console.log(nd1.id + " CHECK CONNECTION TO TESTER " + checkTstr);
+                            console.log(nd1.id + " CHECK CONNECTION TO TESTER " + checkPar);
+                            if(checkTstr && checkPar){
+                            programRun(nd1.connectedComponents[i], comp.array, "parallel", nd1);
+                                
+                            }
+                            for(let i = 0; i < nodeArray.length; i++){
+                              nodeArray[i].tempPassed = false;
+                               nodeArray[i].parallelPassed = false;
+                            }
+                            
+                    }
+                    arr.push(comp);
+                    //for(let i = 0; i < nd1.connectedComponents.length; i++){
+//
+                    //}
+                }
+                else{
+                    console.log("type:" + type);
+                    if(nd1.connectedComponents[0] != null && nd1.connectedComponents[0].id != "0testernode2" && type != "parallel"){
+                        var comp = { type: "series", array: [] };
+                        comp.array.push(nd1.connectedComponents[0].parent.r);
+                        arr.push(comp);
+                        if(!nd1.connectedComponents[0].counterPart.passed){
+                            console.log(nd1.connectedComponents[0]);
+                            nd1.connectedComponents[0].passed = true;
+                            programRun(nd1.connectedComponents[0].counterPart, arr, nd1);
+                        }
+                    }
+                    else if(type == "parallel"){
+                        if(nd1.counterPart.connectedComponents > 1){
+                            for(let i = 0; i < nd1.counterPart.connectedComponents.length; i++){                                      
+                                programRun(nd1.counterPart, arr, "parallel", nd1);
+                            }
+                            
+                        }
+                        else{
+                            console.log("ELSED");
+                            nd1.counterPart.passed = true;
+                            arr.push(nd1.parent.r);
+
+                            console.log("qqqqwwtrrr");
+                            console.log(nd1.id);
+                            console.log(nd1.counterPart.connectedComponents[0].id);
+                            if(!nd1.counterPart.connectedComponents[0].passed){
+                            console.log(nd1.connectedComponents[0]);
+                            nd1.connectedComponents[0].passed = true;
+                            programRun(nd1.counterPart.connectedComponents[0].counterPart, arr, nd1);
+                        }
+                            
+                        }
+                    }
+                }
+            
+
+        }
+        createTester(500, 200);
+        console.log("TESTSETSETSETSEt");
+    </script>
+
+    </body>
+</html>

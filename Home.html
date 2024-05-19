@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="homeStyle.css">
+</head>
+
+<body>
+    <div class="top">
+        <input class="modal-btn-home" type="checkbox" id="modal-btn-home" name="modal-btn-home" onclick="homePage();" />
+        <label class="label-home" for="modal-btn-home">HOME</label>
+        <input class="modal-btn-resource" type="checkbox" id="modal-btn-resource" name="modal-btn-resource" />
+        <label class="label-resource" for="modal-btn-resource">RESOURCES</label>
+        <div class="modal-resource">
+            <div class="modal-wrap-resource">
+                <img src="batteryy.png" alt="">
+                <p>Battery is the main source of energy that provides a voltage which allows the current to flow
+                    through.</p>
+                <img src="resistorr.PNG" alt="">
+                <p>A resistor is an electrical component that limits or regulates the flow of electrical current in an
+                    electronic circuit. Resistors can also be used to provide a specific voltage for an active device
+                    such
+                    as a transistor.</p>
+                <img src="ledd.png" alt="">
+                <p>An LED (Light Emitting Diode) emits light when an electric current passes through it. The simplest
+                    circuit
+                    to power an LED is a voltage source with a resistor and an LED in series.</p>
+            </div>
+        </div>
+        <input class="modal-btn-about" type="checkbox" id="modal-btn-about" name="modal-btn-about" />
+        <label class="label-about" for="modal-btn-about">ABOUT</label>
+        <div class="modal-about">
+            <div class="modal-wrap-about">
+                <p>We think that the time has come for electronics design software to advance as well-user-friendly
+                    tools that take use of web-based distribution to make content immediately and everywhere available.
+                    Process and work together, just a few clicks, simulate, experiment, modify, and share the outcomes.
+                    By simplifying design and analysis, we can enable a new generation of engineers and enthusiasts to
+                    create the systems that will influence the future of the planet. This online circuit builder is an
+                    interactive tool that allows users to easily create, adjust, and evaluate electronic circuits and
+                    electronic components. The application features an interface that includes basic electronic
+                    components that are used in studying and applied in computer systems such as resistors, integrated
+                    circuits, and light emitting diodes. Users are also capable of creating their own basic electronic
+                    circuits and manipulate the values and connections of the electronic components for testing and
+                    evaluation.
+                </p>
+                <p>-Kaboom Integrated Circuit Builder Team-</p>
+            </div>
+        </div>
+        <input class="modal-btn-contact" type="checkbox" id="modal-btn-contact" name="modal-btn-contact" />
+        <label class="label-contact" for="modal-btn-contact">CONTACT</label>
+        <div class="modal-contact">
+            <div class="modal-wrap-contact">
+                <img src="kaboom.png" alt="">
+                <h1>Contact us</h1>
+                <p>(+63)9052545655</p>
+                <p>(+63)9695867299</p>
+                <p>Support@kaboom.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="title">
+            <div class="kaboom">KABOOM</div>
+            <div class="cb">Integrated Circuit Builder</div>
+        </div>
+        <div class="selection">
+            <div class="panel1" onclick="circuitPage();">
+            </div>
+            <div class="panel3" onclick="resistorBandPage();">
+            </div>
+            <div class="panel2" onclick="circuitPage();">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function circuitPage() {
+        window.location.href = "Resistors.html";
+    }
+    function resistorBandPage() {
+        window.location.href = "ResistorBand.html";
+    }
+    function homePage() {
+        window.location.href = "Home.html";
+    }
+</script>
+
+</html>
