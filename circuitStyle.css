@@ -307,7 +307,7 @@ body {
   margin-left: 15px;
 }
 
-#printBtn {
+#printBtn, #deleteBtn, #normalBtn {
   width: 6%;
   height: 4%;
 }

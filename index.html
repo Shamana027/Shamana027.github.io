@@ -66,11 +66,14 @@
             <div class="cb">Integrated Circuit Builder</div>
         </div>
         <div class="selection">
-            <div class="panel1" onclick="circuitPage();">
+            <div class="panel1" onclick="integratedCircuitPage();">
+                Integrated Circuit
             </div>
             <div class="panel3" onclick="resistorBandPage();">
+                Resistor Band
             </div>
             <div class="panel2" onclick="circuitPage();">
+                Parallel/Series
             </div>
         </div>
     </div>
@@ -78,6 +81,9 @@
 <script>
     function circuitPage() {
         window.location.href = "Resistors.html";
+    }
+    function integratedCircuitPage() {
+        window.location.href = "ic.html";
     }
     function resistorBandPage() {
         window.location.href = "ResistorBand.html";

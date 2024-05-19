@@ -20,7 +20,7 @@ body {
 }
 
 .top {
-  height: 150px;
+  height: 6%;
   width: 100%;
   margin-left: 30px;
 }
@@ -34,8 +34,8 @@ body {
   float: right;
 }
 .panel1, .panel2, .panel3 {
-  width: 500px;
-  height: 300px;
+  width: 30%;
+  height: 90%;
   background-image: url("image1.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -44,6 +44,8 @@ body {
   margin: auto;
   transition: width 1s, height 1s;
   text-align: center;
+  font-size: 50px;
+  padding-top: 120px;
 }
 
 .panel1:hover, .panel2:hover, .panel3:hover {
@@ -77,7 +79,8 @@ body {
 
 .selection {
   margin: auto;
-  width: 1700px;
+  width: 90%;
+  height: 350px;
   text-align: center;
 }
 

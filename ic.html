@@ -97,9 +97,9 @@
     </div>
     <button id="hide" onclick="hideBtn()">Hide</button>
     <button id="show" onclick="showBtn()">show</button>
-    <button onclick="runProgram()" id="printBtn">Print</button>
-    <button onclick="selectionMode('delete')">delete mode</button>
-    <button onclick="selectionMode('normal')">normal mode</button>
+    <button id="printBtn">Print</button>
+    <button onclick="selectionMode('delete')" id="deleteBtn">delete mode</button>
+    <button onclick="selectionMode('normal')" id="normalBtn">normal mode</button>
 </body>
 <script>
     n1 = null;
@@ -121,111 +121,6 @@
         document.getElementById('hide').style.display = "initial";
         document.getElementById('show').style.display = "none";
     }
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const container = document.getElementById('container');
-        const content = document.getElementById('content');
-        var scale = 1;
-        const scaleFactor = 0.1;
-        var translateX = 0, translateY = 0;
-
-        var isDragging = false;
-        var startX, startY;
-
-        container.addEventListener('wheel', function (e) {
-            e.preventDefault();
-
-            const rect = container.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            const offsetXPercent = mouseX / rect.width;
-            const offsetYPercent = mouseY / rect.height;
-
-            let newScale;
-
-            if (e.deltaY < 0) {
-                newScale = scale + scaleFactor;
-            } else {
-                newScale = scale - scaleFactor;
-            }
-
-            const minScale = 0.8;
-            if (newScale < minScale) {
-                newScale = minScale;
-            }
-
-            translateX *= newScale / scale;
-            translateY *= newScale / scale;
-
-            scale = newScale;
-
-            content.style.transformOrigin = `${offsetXPercent * 100}% ${offsetYPercent * 100}%`;
-            content.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
-        });
-
-        function getAdjustedCoordinates(clientX, clientY) {
-            const rect = container.getBoundingClientRect();
-            const offsetX = clientX - rect.left;
-            const offsetY = clientY - rect.top;
-            const scaledOffsetX = offsetX / scale;
-            const scaledOffsetY = offsetY / scale;
-            const adjustedX = (scaledOffsetX - translateX) / scale;
-            const adjustedY = (scaledOffsetY - translateY) / scale;
-            return { x: adjustedX, y: adjustedY };
-        }
-
-        let startTranslateX = 0;
-        let startTranslateY = 0;
-
-        container.addEventListener('mousedown', function (e) {
-            if (isDragging) {
-                e.preventDefault();
-                const rect = container.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                const adjustedCoords = getAdjustedCoordinates(mouseX, mouseY);
-                startX = adjustedCoords.x;
-                startY = adjustedCoords.y;
-                startTranslateX = translateX;
-                startTranslateY = translateY;
-                container.style.cursor = 'grabbing';
-            }
-        });
-
-        container.addEventListener('mousemove', function (e) {
-            if (isDragging) {
-                e.preventDefault();
-                const adjustedCoords = getAdjustedCoordinates(e.clientX, e.clientY);
-                translateX = startTranslateX + adjustedCoords.x - startX;
-                translateY = startTranslateY + adjustedCoords.y - startY;
-                content.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
-            }
-        });
-
-        container.addEventListener('mouseup', function () {
-            isDragging = false;
-            container.style.cursor = 'default';
-        });
-
-        container.addEventListener('mouseleave', function () {
-            isDragging = false;
-            container.style.cursor = 'default';
-        });
-        document.addEventListener('keydown', function (e) {
-            const step = 100;
-
-            if (e.key === 'ArrowLeft') {
-                translateX += step;
-            } else if (e.key === 'ArrowRight') {
-                translateX -= step;
-            } else if (e.key === 'ArrowUp') {
-                translateY += step;
-            } else if (e.key === 'ArrowDown') {
-                translateY -= step;
-            }
-
-            content.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
-        });
-    });
     // Header functions (HomePage)
     function homePage() {
         window.location.href = "index.html";
