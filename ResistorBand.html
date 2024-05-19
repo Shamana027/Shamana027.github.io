@@ -237,10 +237,10 @@
         <div class="ohmmeter">
           <br><br>
           <div class="box-container">
-            <div class="box"></div>
+            <div class="box" id="theoBox"></div>
             <p>Theoretical Resistance</p>
             <br>
-            <div class="box"></div>
+            <div class="box" id="testBox"></div>
             <p>Tested Resistance</p>
           </div>
         </div>
@@ -334,7 +334,9 @@
                 <option value="1000">kiloohms (kΩ)</option>
                 <option value="1">ohms (Ω)</option>
               </select>
+              
             </div>
+            <div id="qwe"></div>
           </div>
         </div>            
       </div>
@@ -381,6 +383,7 @@
 
     function calculateResistance(num)
     {
+      console.log("run");
       const band1Value = colorMapping[document.getElementById('Band1').value].value;
       const band2Value = colorMapping[document.getElementById('Band2').value].value;
       const band3Value = colorMapping[document.getElementById('Band3').value].value;
@@ -414,20 +417,26 @@
         default:
           displayValue = resistanceValue + ' Ω';
           break;
-      }  
+      }
+      ToleranceVal();  
+      console.log("qweqweqweqwe");
       console.log("Resistance Value: " + displayValue);
+      document.getElementById('theoBox').innerHTML = displayValue;
       console.log("Resistance Value: " + resistanceValue + ' Ω');
+      document.getElementById('testBox').innerHTML = resistanceValue;
       document.getElementById('txtnum').value = resistanceValue / notation;
+      checkResistanceValue(resistanceValue);
       ToleranceVal();
     }
 
     function homePage()
     {
-      window.location.href = "index.html";
+      window.location.href = "Home.html";
     }
 
     function ToleranceVal()
     {
+      console.log("asadsdsd");
       const resistanceValue = parseFloat(document.getElementById('txtnum').value);
       const toleranceColor = document.getElementById('Tolerance').value;
       const tolerance = parseFloat(colorMapping[toleranceColor].tolerance);      
@@ -467,8 +476,10 @@
           return;
       }
       TestedResistance = Math.floor(Math.random() * (max - min + 1)) + min;
-      return TestedResistance;
-      console.log("Adjusted Resistance Value: " + adjustedResistance);
+      //return TestedResistance;
+      console.log("Tested Value: " + TestedResistance);
+      document.getElementById('testBox').innerHTML = TestedResistance +' Ω' ;
+     // return TestedResistance;
     }
     document.getElementById('Tolerance').addEventListener('change', function()
     {
@@ -484,54 +495,41 @@
       DefaultNotation();
     });
 
-    /*
-    function NewNotation()
+    function generateE192Series()
     {
-      const resistanceValue = parseFloat(document.getElementById('txtnum').value);
-      const notation = parseFloat(document.getElementById('RNotation').value);
-      let displayValue;
-      switch (notation)
-      {
-        case '1000000':
-          displayValue = resistanceValue / 1000000 + ' MΩ';
-          break;
-        case '1000':
-          displayValue = resistanceValue / 1000 + ' kΩ';
-          break;
-        default:
-          displayValue = resistanceValue + ' Ω';
-          break;
-      }  
-      console.log("Resistance Value: " + displayValue);
-      document.getElementById('txtnum').value = resistanceValue / notation;
+    const numValues = 192;
+    const baseValues = [];
+        for (let i = 0; i < numValues; i++)
+        {
+        const value = Math.pow(10, i / numValues);
+        baseValues.push(value);
     }
-    document.getElementById('RNotation').addEventListener('change', function()
+    const allResistors = [];
+    const minDecade = -2;
+    const maxDecade = 6;
+    for (let decade = minDecade; decade <= maxDecade; decade++)
     {
-      NewNotation();
-    });
-    */
+        const scale = Math.pow(10, decade);
+        baseValues.forEach(val => {
+            const scaledValue = parseFloat((val * scale).toFixed(2));
+            allResistors.push(scaledValue);
+        });
+    }
 
-    function ActualTheoretical(number)
-    {
-      switch (number)
-      {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-          console.log("Actual resistor.");
-          break;
-        default:
-          console.log("Theoretical resistor.");
-          break;
-      }
+    return allResistors;
+}
+
+function checkResistanceValue(resistanceValue) {
+    const e192Resistors = generateE192Series();
+    console.log("testing");
+
+    if (e192Resistors.includes(resistanceValue)) {
+        console.log("Actual resistor.");
+        document.getElementById("qwe").innerHTML = "Actual Resistor";
+    } else {
+      document.getElementById("qwe").innerHTML = "Theoretical Resistor";
     }
+}
 
   </script>
 </html>
