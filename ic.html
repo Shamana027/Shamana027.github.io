@@ -109,17 +109,43 @@
     var componentCounter = 0;
     var componentsArray = [];
 
-    function printDiv(contentID) {
-        var content = document.getElementById(contentID).innerHTML;
-        var printWindow = window.open('', '_blank');
-        printWindow.document.open();
-        printWindow.document.write('<html><head><title>Print</title></head><body>');
-        printWindow.document.write(content);
+    function printDiv(print) {
+        var divContent = document.getElementById(print).innerHTML;
+        var printWindow = window.open('', '', 'height=800,width=1600');
+        printWindow.document.write('<html><head><title>Print</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('body { font-family: Arial, sans-serif; }');
+        printWindow.document.write('.line { position: absolute; border-bottom: 1px solid black; }');
+        printWindow.document.write('.node { display: block; position: absolute; width: 20px; height: 20px; background-color: black; border-radius: 50%; }');
+        printWindow.document.write('@media print { body { -webkit-print-color-adjust: exact; } }');
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write('<div id="content">');
+        printWindow.document.write(divContent);
+        printWindow.document.write('</div>');
+
+        var lines = document.querySelectorAll('.line');
+
+        lines.forEach(function (line) {
+            var parent = line.parentElement;
+            var parentRect = parent.getBoundingClientRect();
+            var lineRect = line.getBoundingClientRect();
+            var parentCenterX = parentRect.left + parentRect.width / 2;
+            var parentCenterY = parentRect.top + parentRect.height / 2;
+            var lineCenterX = parentCenterX + line.offsetLeft + lineRect.width / 2;
+            var lineCenterY = parentCenterY + line.offsetTop + lineRect.height / 2;
+            var length = Math.sqrt(Math.pow(parentCenterX - lineCenterX, 2) + Math.pow(parentCenterY - lineCenterY, 2));
+            var angle = Math.atan2(parentCenterY - lineCenterY, parentCenterX - lineCenterX) * 180 / Math.PI;
+            printWindow.document.write('<div class="line" style="width: ' + length + 'px; transform: rotate(' + angle + 'deg); left: ' + (parentCenterX - length / 2) + 'px; top: ' + (parentCenterY - 1) + 'px;"></div>');
+        });
+
         printWindow.document.write('</body></html>');
         printWindow.document.close();
-        printWindow.print();
+        printWindow.onload = function () {
+            printWindow.print();
+            printWindow.close();
+        };
     }
-
     function hideBtn() {
         document.getElementById('leftPanel').style.display = "none";
         document.getElementById('container').style.width = "100%";
