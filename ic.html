@@ -97,7 +97,7 @@
     </div>
     <button id="hide" onclick="hideBtn()">Hide</button>
     <button id="show" onclick="showBtn()">show</button>
-    <button id="printBtn">Print</button>
+    <button id="printBtn" onclick="printDiv('content')">Print</button>
     <button onclick="selectionMode('delete')" id="deleteBtn">delete mode</button>
     <button onclick="selectionMode('normal')" id="normalBtn">normal mode</button>
 </body>
@@ -108,6 +108,17 @@
 
     var componentCounter = 0;
     var componentsArray = [];
+
+    function printDiv(contentID) {
+        var content = document.getElementById(contentID).innerHTML;
+        var printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write('<html><head><title>Print</title></head><body>');
+        printWindow.document.write(content);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
 
     function hideBtn() {
         document.getElementById('leftPanel').style.display = "none";
@@ -543,7 +554,7 @@
                                 console.log(icDiv.gates[i].node3.connectedComponents[j].parent.id);
                                 icDiv.gates[i].node3.connectedComponents[j].connectedComponents.splice(thirdIndex, 1);
                                 runLogic(icDiv.gates[i].node3.connectedComponents[j].parent);
-                                
+
                             }
                         }
                     }
