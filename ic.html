@@ -921,6 +921,36 @@
             console.log("OUTPUT:" + node3.output)
             console.log(node3.connectedComponents);
             console.log("COMPONENT TYPE IS" + component.type);
+
+            if (selMode == "delete") {
+                for (let i = 0; i < component.node1.connectedComponents.length; i++) {
+
+                    firstIndex = component.node1.connectedComponents[i].connectedComponents.indexOf(component.node1);
+                    if (firstIndex !== -1) {
+                        component.node1.connectedComponents[i].connectedComponents.splice(firstIndex, 1);
+                    }
+                    runLogic(component.node1.connectedComponents[i]);
+
+                }
+                for (let i = 0; i < component.node2.connectedComponents.length; i++) {
+
+                    secondIndex = component.node2.connectedComponents[i].connectedComponents.indexOf(component.node2);
+                    if (secondIndex !== -1) {
+                        secondIndex.node2.connectedComponents[i].connectedComponents.splice(secondIndex, 1);
+                    }
+                    runLogic(component.node2.connectedComponents[i]);
+
+                }
+                for (let i = 0; i < component.node3.connectedComponents.length; i++) {
+
+                    thirdIndex = component.node3.connectedComponents[i].connectedComponents.indexOf(component.node3);
+                    if (thirdIndex !== -1) {
+                        component.node3.connectedComponents[i].connectedComponents.splice(thirdIndex, 1);
+                    }
+                    runLogic(component.node3.connectedComponents[i]);
+                }
+                component.remove();
+            }
         });
         //runLogic(component);
         componentCounter++;
